@@ -19,38 +19,38 @@ export class Preloader {
     // Line grows in
     tl.to(this.line, {
       width: '200px',
-      duration: 1.2,
+      duration: 1.5,
       ease: 'power3.out',
     });
 
     // Counter fades in
     tl.to(this.counter, {
       opacity: 1,
-      duration: 0.4,
+      duration: 0.5,
       ease: 'power2.out',
-    }, '-=0.8');
+    }, '-=1.0');
 
-    // Counter increments 0 → 100
+    // Counter increments 0 → 100 (extended +1.6s for full background 3D scene loading)
     tl.to(this, {
       count: 100,
-      duration: 1.6,
+      duration: 3.2,
       ease: 'power2.inOut',
       onUpdate: () => {
         this.counter.textContent = Math.round(this.count);
       },
-    }, '-=0.7');
+    }, '-=0.9');
 
     // Characters animate in with stagger
     tl.to(this.chars, {
       translateY: '0%',
       opacity: 1,
-      duration: 0.9,
-      stagger: 0.07,
+      duration: 1.1,
+      stagger: 0.09,
       ease: 'power4.out',
-    }, '-=1.2');
+    }, '-=2.4');
 
-    // Hold for a beat
-    tl.to({}, { duration: 0.5 });
+    // Hold for a beat to ensure WebGL frame compilation finishes
+    tl.to({}, { duration: 0.8 });
   }
 
   _reveal() {
