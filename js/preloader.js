@@ -10,47 +10,93 @@ export class Preloader {
     this.chars      = document.querySelectorAll('.preloader__char');
     this.counter    = document.querySelector('.preloader__counter');
     this.line       = document.querySelector('.preloader__line');
+    this.words      = document.querySelectorAll('.preloader__word');
     this.count      = 0;
   }
 
   run() {
     const tl = gsap.timeline({ onComplete: () => this._reveal() });
 
-    // Line grows in
+    // Step 1: Cinematic Word Sequence — WELCOME → TO THE → LK STUDIO
+    if (this.words.length >= 3) {
+      // 1a. "WELCOME"
+      tl.to(this.words[0], {
+        translateY: '0%',
+        opacity: 1,
+        duration: 0.7,
+        ease: 'power3.out',
+      });
+      tl.to(this.words[0], {
+        translateY: '-120%',
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power3.in',
+      }, '+=0.5');
+
+      // 1b. "TO THE"
+      tl.to(this.words[1], {
+        translateY: '0%',
+        opacity: 1,
+        duration: 0.7,
+        ease: 'power3.out',
+      }, '-=0.1');
+      tl.to(this.words[1], {
+        translateY: '-120%',
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power3.in',
+      }, '+=0.5');
+
+      // 1c. "LK STUDIO"
+      tl.to(this.words[2], {
+        translateY: '0%',
+        opacity: 1,
+        duration: 0.7,
+        ease: 'power3.out',
+      }, '-=0.1');
+      tl.to(this.words[2], {
+        translateY: '-120%',
+        opacity: 0,
+        duration: 0.5,
+        ease: 'power3.in',
+      }, '+=0.6');
+    }
+
+    // Step 2: Line grows in
     tl.to(this.line, {
       width: '200px',
-      duration: 1.5,
+      duration: 1.2,
       ease: 'power3.out',
-    });
+    }, '-=0.1');
 
-    // Counter fades in
+    // Step 3: Counter fades in
     tl.to(this.counter, {
       opacity: 1,
-      duration: 0.5,
+      duration: 0.4,
       ease: 'power2.out',
-    }, '-=1.0');
+    }, '-=0.8');
 
-    // Counter increments 0 → 100 (extended +1.6s for full background 3D scene loading)
+    // Step 4: Counter increments 0 → 100
     tl.to(this, {
       count: 100,
-      duration: 3.2,
+      duration: 3.0,
       ease: 'power2.inOut',
       onUpdate: () => {
         this.counter.textContent = Math.round(this.count);
       },
-    }, '-=0.9');
+    }, '-=0.7');
 
-    // Characters animate in with stagger
+    // Step 5: Logo "MR. LK" characters animate in with stagger
     tl.to(this.chars, {
       translateY: '0%',
       opacity: 1,
-      duration: 1.1,
-      stagger: 0.09,
+      duration: 1.0,
+      stagger: 0.08,
       ease: 'power4.out',
-    }, '-=2.4');
+    }, '-=2.2');
 
-    // Hold for a beat to ensure WebGL frame compilation finishes
-    tl.to({}, { duration: 0.8 });
+    // Step 6: Final hold for WebGL ready
+    tl.to({}, { duration: 0.6 });
   }
 
   _reveal() {

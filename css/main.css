@@ -32,6 +32,37 @@ button { background: none; border: none; cursor: none; color: inherit; font: inh
   flex-direction: column;
   gap: 2rem;
 }
+.preloader__words {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.preloader__word-box {
+  overflow: hidden;
+  height: clamp(2.5rem, 6vw, 5rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+}
+.preloader__word {
+  display: inline-block;
+  font-family: var(--f-display);
+  font-size: clamp(2.2rem, 5.5vw, 5rem);
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  color: var(--c-gold);
+  transform: translateY(120%);
+  opacity: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
 .preloader__logo {
   font-family: var(--f-display);
   font-size: clamp(3rem, 8vw, 7rem);
