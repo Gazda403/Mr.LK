@@ -259,16 +259,17 @@ nav {
   right: 0;
   left: 38%;
   bottom: -15%;
-  width: auto;
-  height: auto;
+  width: 62%;        /* explicit width for iframe */
+  height: 130%;      /* explicit height for iframe (top+bottom overhang = 30%) */
   z-index: var(--z-canvas);
   border: none;
   opacity: 0;
-  pointer-events: auto;
-  /* Own GPU compositor layer — prevents repaints from bleeding in */
+  pointer-events: none;  /* let clicks pass through to hero content */
+  /* Own GPU compositor layer */
   will-change: opacity;
   transform: translateZ(0);
   backface-visibility: hidden;
+  background: transparent;
 }
 .hero__content {
   position: relative;

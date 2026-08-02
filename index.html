@@ -43,7 +43,7 @@
   </script>
   <!-- Preload Spline viewer and 3D scene binary locally at high priority -->
   <link rel="modulepreload" href="js/spline-viewer.js">
-  <link rel="preload" href="https://my.spline.design/marsplanet-VHr4tKh2fdV69dAgVtjjTM3o/scene.splinecode" as="fetch" crossorigin>
+
   <link rel="modulepreload" href="js/main.js">
 
   <!-- Spline Web Component (local) -->
@@ -89,7 +89,15 @@
   <section id="hero" aria-label="Hero section">
     <div id="hero-bars" aria-hidden="true"></div>
     <canvas id="hero-canvas" aria-hidden="true"></canvas>
-    <spline-viewer id="hero-spline" url="https://my.spline.design/marsplanet-VHr4tKh2fdV69dAgVtjjTM3o/scene.splinecode" loading="eager" events-target="global" aria-hidden="true"></spline-viewer>
+    <iframe
+      id="hero-spline"
+      src="https://my.spline.design/marsplanet-VHr4tKh2fdV69dAgVtjjTM3o/"
+      frameborder="0"
+      scrolling="no"
+      allow="autoplay"
+      loading="eager"
+      aria-hidden="true"
+    ></iframe>
     <div class="hero__content">
       <p class="hero__eyebrow">DIGITAL STUDIO — Est. 2026</p>
       <h1 class="hero__title" aria-label="We Build Worlds">

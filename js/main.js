@@ -25,18 +25,10 @@ function boot() {
   const preloader = new Preloader(() => {
     // —— After preloader completes (Spline 3D scene fully rendered behind curtain) ——
 
-    // Reveal Spline element
+    // Reveal Spline iframe after preloader
     const splineEl = document.getElementById('hero-spline');
     if (splineEl) {
       gsap.to(splineEl, { opacity: 1, duration: 1.5, ease: 'power2.out' });
-
-      // Pause rendering when scrolled off-screen — saves GPU/battery
-      if ('IntersectionObserver' in window) {
-        const obs = new IntersectionObserver((entries) => {
-          splineEl.style.visibility = entries[0].isIntersecting ? 'visible' : 'hidden';
-        }, { threshold: 0 });
-        obs.observe(splineEl);
-      }
     }
 
     // Gradient bars — CSS-only animations, safe to start now
