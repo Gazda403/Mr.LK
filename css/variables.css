@@ -1,0 +1,53 @@
+/* ============================================
+   MR. LK STUDIO — Design Tokens
+   Rebrand: Black × White × Crimson
+   ============================================ */
+
+:root {
+  /* Colors */
+  --c-void:       #0A0A0A;        /* pure black */
+  --c-void-soft:  #141414;        /* lifted black */
+  --c-gold:       #CF2F2F;        /* crimson red — replaces gold everywhere */
+  --c-gold-dim:   #7A1A1A;        /* deep dark red */
+  --c-cyan:       #F5F5F5;        /* white — replaces cyan accents */
+  --c-violet:     #888888;        /* mid grey — replaces violet */
+  --c-white:      #F5F5F5;        /* near-pure white */
+  --c-white-dim:  #808080;        /* neutral grey */
+  --c-glass:      rgba(255, 255, 255, 0.04);
+  --c-border:     rgba(255, 255, 255, 0.10);
+
+  /* Typography */
+  --f-display:    'Power Grotesk', 'Space Grotesk', 'Syne', sans-serif;
+  --f-body:       'Inter', system-ui, sans-serif;
+  --f-mono:       'Space Mono', monospace;
+
+  /* Font sizes — fluid */
+  --fs-hero:      clamp(4rem, 10vw, 11.5rem);
+  --fs-section:   clamp(3rem, 7vw, 8rem);
+  --fs-large:     clamp(1.5rem, 3vw, 3rem);
+  --fs-body:      clamp(0.9rem, 1.1vw, 1.05rem);
+  --fs-small:     0.75rem;
+  --fs-label:     0.65rem;
+
+  /* Spacing */
+  --sp-xs:  0.5rem;
+  --sp-sm:  1rem;
+  --sp-md:  2rem;
+  --sp-lg:  4rem;
+  --sp-xl:  8rem;
+  --sp-2xl: 14rem;
+
+  /* Motion */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-inout:  cubic-bezier(0.87, 0, 0.13, 1);
+  --dur-fast:    0.3s;
+  --dur-med:     0.7s;
+  --dur-slow:    1.2s;
+
+  /* Z-index layers */
+  --z-canvas:    0;
+  --z-content:   10;
+  --z-nav:       100;
+  --z-cursor:    900;
+  --z-preloader: 1000;
+}

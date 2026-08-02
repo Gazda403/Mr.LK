@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MR. LK — DIGITAL STUDIO</title>
+  <meta name="description" content="MR. LK is a digital studio specializing in immersive web experiences, 3D storytelling, and digital craftsmanship.">
+  <meta property="og:title" content="MR. LK — DIGITAL STUDIO">
+  <meta property="og:description" content="We build web experiences that make people stop scrolling.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0A0A0A">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400;500&family=Space+Mono&family=Space+Grotesk:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/power-grotesk" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <!-- GSAP (global) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Lenis (global) -->
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+
+  <!-- Three.js import map -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+    }
+  }
+  </script>
+  <!-- Spline Web Component -->
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.72/build/spline-viewer.js"></script>
+</head>
+<body>
+
+  <!-- PRELOADER -->
+  <div id="preloader">
+    <div class="preloader__logo" aria-hidden="true">
+      <span class="preloader__char">M</span>
+      <span class="preloader__char">R</span>
+      <span class="preloader__char" style="margin:0 0.15em">.</span>
+      <span class="preloader__char">L</span>
+      <span class="preloader__char">K</span>
+    </div>
+    <div class="preloader__counter">0</div>
+    <div class="preloader__line"></div>
+  </div>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="cursor" aria-hidden="true"></div>
+  <div class="cursor-follower" aria-hidden="true"></div>
+  <div class="cursor-label" aria-hidden="true">View</div>
+
+  <!-- NAVIGATION -->
+  <nav aria-label="Main navigation">
+    <a href="#" class="nav__logo">MR.<span>LK</span></a>
+    <ul class="nav__links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <a href="#contact" class="nav__cta">Let's Talk</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero" aria-label="Hero section">
+    <div id="hero-bars" aria-hidden="true"></div>
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
+    <spline-viewer id="hero-spline" url="https://my.spline.design/worldplanetdarkred-uBGJeJ2PtuT86s7NwmTQbamw/scene.splinecode?v=2" events-target="global" aria-hidden="true"></spline-viewer>
+    <div class="hero__content">
+      <p class="hero__eyebrow">DIGITAL STUDIO — Est. 2026</p>
+      <h1 class="hero__title" aria-label="We Build Worlds">
+        <span class="line"><span class="word">We</span> <span class="word"><em>Build</em></span></span>
+        <span class="line"><span class="word">Worlds</span></span>
+      </h1>
+      <p class="hero__sub">
+        Immersive web experiences, 3D storytelling, and digital craftsmanship 
+        that make people stop and remember.
+      </p>
+    </div>
+    <div class="hero__scroll" aria-hidden="true">
+      <span class="hero__scroll-dot"></span>
+      Scroll to explore
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div id="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span class="marquee__item">Web Design<span>·</span></span>
+      <span class="marquee__item">Software Development<span>·</span></span>
+      <span class="marquee__item">Motion Design<span>·</span></span>
+      <span class="marquee__item">Brand Identity<span>·</span></span>
+      <span class="marquee__item">Interactive Experiences<span>·</span></span>
+      <span class="marquee__item">Digital Storytelling<span>·</span></span>
+      <!-- Duplicate for seamless loop -->
+      <span class="marquee__item">Web Design<span>·</span></span>
+      <span class="marquee__item">Software Development<span>·</span></span>
+      <span class="marquee__item">Motion Design<span>·</span></span>
+      <span class="marquee__item">Brand Identity<span>·</span></span>
+      <span class="marquee__item">Interactive Experiences<span>·</span></span>
+      <span class="marquee__item">Digital Storytelling<span>·</span></span>
+    </div>
+  </div>
+
+  <!-- WORK -->
+  <section id="work" aria-labelledby="work-title">
+    <div class="work__header">
+      <div>
+        <p class="section-label">Selected Work</p>
+        <h2 class="section-title" id="work-title" data-reveal>Featured<br><em style="font-style:italic;color:var(--c-gold);">Projects</em></h2>
+      </div>
+      <span class="work__count">05&nbsp;/&nbsp;Projects</span>
+    </div>
+
+    <div class="work__scroll-wrapper">
+      <div class="work__track" id="work-track">
+
+        <article class="project-card" data-project>
+          <span class="project-card__number">01</span>
+          <img src="assets/projects/project-01.jpg" alt="Luminos — Brand Identity Project" class="project-card__img" width="1280" height="720" loading="lazy">
+          <div class="project-card__overlay"></div>
+          <div class="project-card__info">
+            <p class="project-card__tags">Brand Identity · Web Design</p>
+            <h3 class="project-card__name">Luminos</h3>
+          </div>
+          <div class="project-card__arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M7 17L17 7M17 7H7M17 7v10"/>
+            </svg>
+          </div>
+        </article>
+
+        <article class="project-card" data-project>
+          <span class="project-card__number">02</span>
+          <img src="assets/projects/project-02.jpg" alt="Voidex — 3D Product Experience" class="project-card__img" width="1280" height="720" loading="lazy">
+          <div class="project-card__overlay"></div>
+          <div class="project-card__info">
+            <p class="project-card__tags">3D · Motion Design</p>
+            <h3 class="project-card__name">Voidex</h3>
+          </div>
+          <div class="project-card__arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M7 17L17 7M17 7H7M17 7v10"/>
+            </svg>
+          </div>
+        </article>
+
+        <article class="project-card" data-project>
+          <span class="project-card__number">03</span>
+          <img src="assets/projects/project-03.jpg" alt="Prism — Interactive Art Experience" class="project-card__img" width="1280" height="720" loading="lazy">
+          <div class="project-card__overlay"></div>
+          <div class="project-card__info">
+            <p class="project-card__tags">Interactive · Art Direction</p>
+            <h3 class="project-card__name">Prism</h3>
+          </div>
+          <div class="project-card__arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M7 17L17 7M17 7H7M17 7v10"/>
+            </svg>
+          </div>
+        </article>
+
+        <article class="project-card" data-project>
+          <span class="project-card__number">04</span>
+          <img src="assets/projects/project-04.jpg" alt="Nexus — Platform Development" class="project-card__img" width="1280" height="720" loading="lazy">
+          <div class="project-card__overlay"></div>
+          <div class="project-card__info">
+            <p class="project-card__tags">Development · UX Design</p>
+            <h3 class="project-card__name">Nexus</h3>
+          </div>
+          <div class="project-card__arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M7 17L17 7M17 7H7M17 7v10"/>
+            </svg>
+          </div>
+        </article>
+
+        <article class="project-card" data-project>
+          <span class="project-card__number">05</span>
+          <img src="assets/projects/project-05.jpg" alt="Form — Design System" class="project-card__img" width="1280" height="720" loading="lazy">
+          <div class="project-card__overlay"></div>
+          <div class="project-card__info">
+            <p class="project-card__tags">Design System · Motion</p>
+            <h3 class="project-card__name">Form</h3>
+          </div>
+          <div class="project-card__arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M7 17L17 7M17 7H7M17 7v10"/>
+            </svg>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <div class="work__cta-wrap">
+      <a href="#" class="btn-outline">
+        All Projects
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M7 17L17 7M17 7H7M17 7v10"/>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- SCROLL PATH SCENE ─────────────────────────────────────
+       Wrapper spans Services → About → Contact.
+       SVG fills it via CSS (position:absolute inset:0).
+       About's opaque #111 bg naturally hides the paths there.
+       No JS positioning needed — immune to GSAP pin spacers.
+  ──────────────────────────────────────────────────────── -->
+  <div id="path-scene">
+    <canvas id="fluid-particles-canvas" aria-hidden="true"></canvas>
+
+    <svg
+      id="scroll-path-svg"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="none"
+      viewBox="0 0 100 100"
+    >
+      <!-- Path 1: primary line -->
+      <path
+        class="scroll-crimson-path"
+        d="M 0,7 C 50,7 96,27 100,40 L 100,60 C 96,73 50,93 0,97"
+        fill="none"
+        stroke="rgba(207,47,47,0.75)"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        vector-effect="non-scaling-stroke"
+      />
+      <!-- Path 2: mid line -->
+      <path
+        class="scroll-crimson-path"
+        d="M 0,10 C 48,10 94,30 100,43 L 100,63 C 94,76 48,96 0,100"
+        fill="none"
+        stroke="rgba(207,47,47,0.45)"
+        stroke-width="1"
+        stroke-linecap="round"
+        vector-effect="non-scaling-stroke"
+      />
+      <!-- Path 3: shadow line -->
+      <path
+        class="scroll-crimson-path"
+        d="M 0,13 C 46,13 92,33 100,46 L 100,66 C 92,79 46,99 0,103"
+        fill="none"
+        stroke="rgba(207,47,47,0.22)"
+        stroke-width="0.6"
+        stroke-linecap="round"
+        vector-effect="non-scaling-stroke"
+      />
+    </svg>
+
+    <!-- SERVICES -->
+
+  <section id="services" aria-labelledby="services-title">
+    <div class="services__header" data-reveal>
+      <p class="section-label">What We Do</p>
+      <h2 class="section-title" id="services-title">Our<br><em style="font-style:italic;color:var(--c-gold)">Craft</em></h2>
+    </div>
+
+    <div class="services__grid">
+
+      <div class="service-item" data-reveal>
+        <span class="service-num">01</span>
+        <div>
+          <h3 class="service-name">Web Design &amp; Development</h3>
+          <p class="service-desc">Pixel-perfect interfaces built with purpose. From concept to code — performance-first, always.</p>
+        </div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M13 7l5 5-5 5M6 7l5 5-5 5"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="service-item" data-reveal>
+        <span class="service-num">02</span>
+        <div>
+          <h3 class="service-name">3D &amp; Motion Design</h3>
+          <p class="service-desc">Immersive 3D worlds, cinematic motion graphics, and real-time interactive experiences.</p>
+        </div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="service-item" data-reveal>
+        <span class="service-num">03</span>
+        <div>
+          <h3 class="service-name">Brand Identity</h3>
+          <p class="service-desc">Visual systems that feel inevitable — logos, typography, color, and the language of a brand.</p>
+        </div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="service-item" data-reveal>
+        <span class="service-num">04</span>
+        <div>
+          <h3 class="service-name">Interactive Experiences</h3>
+          <p class="service-desc">WebGL, scroll-driven stories, and digital installations that stop people in their tracks.</p>
+        </div>
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" aria-labelledby="about-title">
+    <div class="about__grid">
+      <div>
+        <p class="section-label" data-reveal>About the Studio</p>
+        <blockquote class="about__statement" data-reveal>
+          "We turn ideas into experiences people can't <em>stop</em> talking about."
+        </blockquote>
+      </div>
+      <div class="about__right">
+        <p class="about__bio" data-reveal>
+          MR. LK is an independent digital studio focused on building digital work 
+          that moves people. We combine design, motion, and code into experiences 
+          that feel alive — not just functional. Every project starts with a question: 
+          <em>what should it feel like?</em>
+        </p>
+        <div class="about__stats">
+          <div data-reveal>
+            <div class="stat-num">40+</div>
+            <div class="stat-label">Projects Delivered</div>
+          </div>
+          <div data-reveal>
+            <div class="stat-num">5+</div>
+            <div class="stat-label">Years of Craft</div>
+          </div>
+          <div data-reveal>
+            <div class="stat-num">3</div>
+            <div class="stat-label">Awards Won</div>
+          </div>
+          <div data-reveal>
+            <div class="stat-num">∞</div>
+            <div class="stat-label">Pixels Pushed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" aria-labelledby="contact-title">
+    <div class="contact__bg-text" aria-hidden="true">Hello</div>
+    <p class="contact__label">Get In Touch</p>
+    <h2 class="contact__heading" id="contact-title" data-reveal>
+      Ready to<br><em>Start?</em>
+    </h2>
+    <a href="mailto:hello@mrlk.studio" class="contact__email" data-reveal>
+      hello@mrlk.studio
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="color:var(--c-gold)">
+        <path d="M7 17L17 7M17 7H7M17 7v10"/>
+      </svg>
+    </a>
+    <ul class="contact__socials" data-reveal>
+      <li><a href="#">Instagram</a></li>
+      <li><a href="#">Behance</a></li>
+      <li><a href="#">Dribbble</a></li>
+      <li><a href="#">LinkedIn</a></li>
+    </ul>
+  </section>
+
+  </div><!-- /#path-scene -->
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="footer__left">MR. LK © 2025</p>
+    <p class="footer__right">Built with <span>intention</span></p>
+  </footer>
+
+  <!-- Main JS entry (module) -->
+  <script type="module" src="js/main.js"></script>
+
+</body>
+</html>
