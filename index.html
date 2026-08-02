@@ -425,5 +425,14 @@
   <!-- Main JS entry (module) -->
   <script type="module" src="js/main.js"></script>
 
+  <!-- Service Worker — registers immediately for instant repeat visits -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      });
+    }
+  </script>
+
 </body>
 </html>

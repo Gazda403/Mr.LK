@@ -227,6 +227,8 @@ nav {
   justify-content: center;
   padding: 0 3rem;
   overflow: hidden;
+  /* Isolate hero's paint/layout from the rest of the page */
+  contain: layout style;
 }
 #hero-bars {
   position: absolute;
@@ -263,6 +265,10 @@ nav {
   border: none;
   opacity: 0;
   pointer-events: auto;
+  /* Own GPU compositor layer — prevents repaints from bleeding in */
+  will-change: opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 .hero__content {
   position: relative;
