@@ -17,6 +17,9 @@ export class Cursor {
   }
 
   init() {
+    // No cursor on touch devices — skip entire setup
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
+
     // Track raw mouse position
     window.addEventListener('mousemove', (e) => {
       this.x = e.clientX;

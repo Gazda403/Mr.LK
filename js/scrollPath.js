@@ -38,16 +38,24 @@ export function initScrollPath() {
       // ── Tick loop — runs every animation frame ────────────
       //   Reads getBoundingClientRect() which always reflects
       //   the real visual position, even with Lenis smooth scroll.
+      let lastProgress = -1;
+
       const tick = () => {
-        const rect   = scene.getBoundingClientRect();
-        const viewH  = window.innerHeight;
-        const sceneH = scene.offsetHeight;
+        requestAnimationFrame(tick);
+
+        const rect    = scene.getBoundingClientRect();
+        const viewH   = window.innerHeight;
+        const sceneH  = scene.offsetHeight;
 
         // 0 = scene just entered viewport bottom
         // 1 = scene fully exited viewport top
         const traveled = viewH - rect.top;
         const total    = sceneH + viewH;
         const progress = Math.max(0, Math.min(1, traveled / total));
+
+        // Skip DOM writes when nothing has visually changed
+        if (Math.abs(progress - lastProgress) < 0.0008) return;
+        lastProgress = progress;
 
         paths.forEach((path, i) => {
           const len    = lengths[i];
@@ -56,11 +64,10 @@ export function initScrollPath() {
           const offset = -(dash + gap) * speeds[i] * progress;
           path.setAttribute('stroke-dashoffset', offset);
         });
-
-        requestAnimationFrame(tick);
       };
 
       requestAnimationFrame(tick);
+
     });
   });
 }

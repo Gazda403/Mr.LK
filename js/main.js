@@ -19,39 +19,35 @@ gsap.registerPlugin(ScrollTrigger);
 const isMobile = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent)
   || window.innerWidth < 768;
 
-// ── Boot sequence ─────────────────────────────────────────
-async function boot() {
-  // 1. Cursor (start tracking immediately)
+// ── Boot sequence ——————————————————————————————————————————
+function boot() {
+  // 1. Cursor (start tracking immediately — skip on touch devices)
   const cursor = new Cursor();
 
   // 1.5 Gradient Bars Background
   initGradientBars('hero-bars', {
     numBars: 15,
-    gradientFrom: 'rgba(207, 47, 47, 0.4)', // using semi-transparent red
+    gradientFrom: 'rgba(207, 47, 47, 0.4)',
     gradientTo: 'transparent',
     animationDuration: 2.5
   });
 
-  // 2. 3D Scene (loads alongside preloader)
-  let scene = null;
-  if (!isMobile) {
-    try {
-      scene = new HeroScene();
-      // Start hidden — canvas fades in after preloader
-      document.getElementById('hero-canvas').style.opacity = '0';
-    } catch (e) {
-      console.warn('WebGL not available, falling back to CSS only.', e);
-    }
-  }
-
-  // 3. Preloader
+  // 2. Preloader runs first — no 3D scene blocking the critical path
   const preloader = new Preloader(() => {
-    // Called when preloader finishes
+    // —— After preloader completes ——
 
-    // Keep native Three.js canvas hidden so Spline scene takes main stage cleanly
-    if (scene) {
-      document.getElementById('hero-canvas').style.display = 'none';
+    // 2a. Now init Three.js scene (it ends up hidden, but init is deferred
+    //     so it doesn't compete with the preloader for GPU/main-thread)
+    if (!isMobile) {
+      try {
+        const scene = new HeroScene();
+        // Keep native Three.js canvas hidden so Spline scene takes main stage
+        document.getElementById('hero-canvas').style.display = 'none';
+      } catch (e) {
+        console.warn('WebGL not available, falling back to CSS only.', e);
+      }
     }
+
     const splineEl = document.getElementById('hero-spline');
     if (splineEl) {
       gsap.to(splineEl, { opacity: 1, duration: 1.5, ease: 'power2.out' });
@@ -68,9 +64,9 @@ async function boot() {
     setTimeout(() => {
       initScrollAnimations();
       ScrollTrigger.refresh();
-      initScrollPath(); // after refresh — pin spacers already placed
+      initScrollPath();
       initFluidParticles('fluid-particles-canvas', {
-        particleCount: 2000,
+        particleCount: isMobile ? 0 : 1200,
         noiseIntensity: 0.003,
       });
     }, 300);

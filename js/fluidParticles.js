@@ -89,6 +89,7 @@ export function initFluidParticles(canvasId, {
 } = {}) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
+  if (particleCount === 0) return; // mobile skip
 
   const ctx = canvas.getContext('2d', { alpha: true });
   if (!ctx) return;
@@ -103,59 +104,101 @@ export function initFluidParticles(canvasId, {
 
   resizeCanvas();
 
-  const particles = Array.from({ length: particleCount }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    size: Math.random() * (particleSize.max - particleSize.min) + particleSize.min,
-    velocity: { x: 0, y: 0 },
-    life: Math.random() * 100,
-    maxLife: 100 + Math.random() * 50,
-  }));
+  // Pre-assign a color bucket index to each particle so we can batch by color
+  // 0=white, 1=grey, 2=red, 3=brightRed
+  const COLORS = [
+    'rgba(245, 245, 245',  // white
+    'rgba(136, 136, 136',  // grey
+    'rgba(235, 45, 45',    // red  (uses redColor override)
+    'rgba(255, 68, 68',    // bright red
+  ];
+  const COLOR_RANGES = [0.55, 0.75, 0.90, 1.0];
+
+  const particles = Array.from({ length: particleCount }, () => {
+    const pick = Math.random();
+    let colorIdx = 3;
+    for (let c = 0; c < COLOR_RANGES.length; c++) {
+      if (pick < COLOR_RANGES[c]) { colorIdx = c; break; }
+    }
+    return {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * (particleSize.max - particleSize.min) + particleSize.min,
+      vx: 0,
+      vy: 0,
+      life: Math.random() * 100,
+      maxLife: 100 + Math.random() * 50,
+      colorIdx,
+    };
+  });
+
+  // Sort particles by color index once so same-color particles are adjacent
+  particles.sort((a, b) => a.colorIdx - b.colorIdx);
+
+  let rafId = null;
+  let paused = false;
+  // Single time accumulator — NOT Date.now() per particle
+  let timeAcc = 0;
 
   const animate = () => {
-    // Clear canvas with a semi-transparent dark background for smooth trails
+    rafId = requestAnimationFrame(animate);
+    if (paused) return;
+
+    timeAcc += 0.0001; // increment once per frame (~0.0001 per ~16ms)
+
     ctx.fillStyle = 'rgba(10, 10, 10, 0.12)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    for (const particle of particles) {
-      particle.life += 1;
-      if (particle.life > particle.maxLife) {
-        particle.life = 0;
-        particle.x = Math.random() * canvas.width;
-        particle.y = Math.random() * canvas.height;
+    // Draw particles batched by color to minimize fillStyle state changes
+    let currentColorIdx = -1;
+
+    for (const p of particles) {
+      p.life += 1;
+      if (p.life > p.maxLife) {
+        p.life = 0;
+        p.x = Math.random() * canvas.width;
+        p.y = Math.random() * canvas.height;
       }
 
-      // Smooth opacity wave for vibrant crimson red particles
-      const opacity = Math.sin((particle.life / particle.maxLife) * Math.PI) * 0.45 + 0.15;
+      const opacity = Math.sin((p.life / p.maxLife) * Math.PI) * 0.45 + 0.15;
 
-      const n = noise.simplex3(
-        particle.x * noiseIntensity,
-        particle.y * noiseIntensity,
-        Date.now() * 0.0001,
-      );
-
+      const n = noise.simplex3(p.x * noiseIntensity, p.y * noiseIntensity, timeAcc);
       const angle = n * Math.PI * 4;
-      particle.velocity.x = Math.cos(angle) * 2;
-      particle.velocity.y = Math.sin(angle) * 2;
+      p.vx = Math.cos(angle) * 2;
+      p.vy = Math.sin(angle) * 2;
 
-      particle.x += particle.velocity.x;
-      particle.y += particle.velocity.y;
+      p.x += p.vx;
+      p.y += p.vy;
 
-      if (particle.x < 0) particle.x = canvas.width;
-      if (particle.x > canvas.width) particle.x = 0;
-      if (particle.y < 0) particle.y = canvas.height;
-      if (particle.y > canvas.height) particle.y = 0;
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
 
-      ctx.fillStyle = `${redColor}, ${opacity})`;
+      // Only update fillStyle when color bucket changes (batching)
+      if (p.colorIdx !== currentColorIdx) {
+        currentColorIdx = p.colorIdx;
+        ctx.fillStyle = `${COLORS[currentColorIdx]}, ${opacity})`;
+      }
+
       ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
       ctx.fill();
     }
-
-    requestAnimationFrame(animate);
   };
 
   animate();
 
-  window.addEventListener('resize', resizeCanvas);
+  // Pause when tab is hidden — saves 100% GPU when user switches tabs
+  document.addEventListener('visibilitychange', () => {
+    paused = document.hidden;
+  });
+
+  // Pause when canvas is not on screen — saves GPU when user scrolls past
+  const obs = new IntersectionObserver((entries) => {
+    paused = !entries[0].isIntersecting || document.hidden;
+  }, { threshold: 0 });
+  obs.observe(canvas);
+
+  window.addEventListener('resize', resizeCanvas, { passive: true });
 }

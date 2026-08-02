@@ -40,12 +40,14 @@ export class HeroScene {
   // ── Renderer ───────────────────────────────────────────
   setupRenderer() {
     this.renderer = new THREE.WebGLRenderer({
-      canvas:    this.canvas,
-      antialias: true,
-      alpha:     true,
+      canvas:          this.canvas,
+      antialias:       true,
+      alpha:           true,
+      powerPreference: 'high-performance', // use dedicated GPU on laptops
     });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Cap at 1.5 — difference vs 2 is invisible, saves ~44% fill-rate
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     this.renderer.toneMapping         = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.2;
     this.renderer.outputColorSpace    = THREE.SRGBColorSpace;
@@ -173,14 +175,18 @@ export class HeroScene {
 
   // ── Post Processing — Bloom ────────────────────────────
   setupPostProcessing() {
+    // Bloom renders at half res — it’s a blur so visually identical, 75% less GPU memory
+    const bW = Math.floor(window.innerWidth  / 2);
+    const bH = Math.floor(window.innerHeight / 2);
+
     this.composer = new EffectComposer(this.renderer);
     this.composer.addPass(new RenderPass(this.scene, this.camera));
 
     const bloom = new UnrealBloomPass(
-      new THREE.Vector2(window.innerWidth, window.innerHeight),
-      0.7,    // strength — slightly stronger for red impact
+      new THREE.Vector2(bW, bH),
+      0.7,    // strength
       0.4,    // radius
-      0.80    // threshold — lower so red pops more
+      0.80    // threshold
     );
     this.composer.addPass(bloom);
   }
@@ -211,7 +217,8 @@ export class HeroScene {
   // ── Animation Loop ─────────────────────────────────────
   tick() {
     requestAnimationFrame(() => this.tick());
-    if (!this.isVisible) return;
+    // Skip frame if tab is hidden or canvas is off-screen
+    if (!this.isVisible || document.hidden) return;
 
     const elapsed = this.clock.getElapsedTime();
 
