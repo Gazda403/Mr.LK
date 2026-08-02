@@ -332,6 +332,8 @@ nav {
   gap: 0;
   white-space: nowrap;
   animation: marquee-scroll 30s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
 }
 .marquee__track:hover { animation-play-state: paused; }
 .marquee__item {
