@@ -51,6 +51,16 @@ function boot() {
     const splineEl = document.getElementById('hero-spline');
     if (splineEl) {
       gsap.to(splineEl, { opacity: 1, duration: 1.5, ease: 'power2.out' });
+
+      // Pause/hide Spline when offscreen to save GPU resources
+      if ('IntersectionObserver' in window) {
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            splineEl.style.visibility = entry.isIntersecting ? 'visible' : 'hidden';
+          });
+        }, { threshold: 0 });
+        obs.observe(splineEl);
+      }
     }
 
     // Init smooth scroll

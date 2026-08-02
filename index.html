@@ -43,11 +43,13 @@
     }
   }
   </script>
-  <!-- Spline Web Component -->
-  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.72/build/spline-viewer.js"></script>
-
-  <!-- Preload main JS entry so module graph resolves faster -->
+  <!-- Preload Spline viewer and 3D scene binary locally at high priority -->
+  <link rel="modulepreload" href="js/spline-viewer.js">
+  <link rel="preload" href="assets/scene.splinecode" as="fetch" crossorigin>
   <link rel="modulepreload" href="js/main.js">
+
+  <!-- Spline Web Component (local) -->
+  <script type="module" src="js/spline-viewer.js"></script>
 </head>
 <body>
 
@@ -84,7 +86,7 @@
   <section id="hero" aria-label="Hero section">
     <div id="hero-bars" aria-hidden="true"></div>
     <canvas id="hero-canvas" aria-hidden="true"></canvas>
-    <spline-viewer id="hero-spline" url="https://my.spline.design/worldplanetdarkred-uBGJeJ2PtuT86s7NwmTQbamw/scene.splinecode?v=2" events-target="global" aria-hidden="true"></spline-viewer>
+    <spline-viewer id="hero-spline" url="assets/scene.splinecode" loading="eager" events-target="global" aria-hidden="true"></spline-viewer>
     <div class="hero__content">
       <p class="hero__eyebrow">DIGITAL STUDIO — Est. 2026</p>
       <h1 class="hero__title" aria-label="We Build Worlds">
