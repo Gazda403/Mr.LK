@@ -11,6 +11,8 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 export class HeroScene {
   constructor() {
     this.canvas      = document.getElementById('hero-canvas');
+    if (!this.canvas) return;
+
     this.renderer    = null;
     this.scene       = null;
     this.camera      = null;
@@ -37,7 +39,7 @@ export class HeroScene {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     this.renderer.toneMapping         = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.1;
+    this.renderer.toneMappingExposure = 1.2;
     this.renderer.outputColorSpace    = THREE.SRGBColorSpace;
   }
 
@@ -52,17 +54,17 @@ export class HeroScene {
 
   // ── Lights ─────────────────────────────────────────────
   createLights() {
-    // Soft ambient so dark side of globe isn't pitch black
-    const ambient = new THREE.AmbientLight(0x111122, 1.5);
+    // Soft ambient light
+    const ambient = new THREE.AmbientLight(0x221111, 2.0);
     this.scene.add(ambient);
 
-    // Crimson key light — comes from upper-right like in the screenshot
-    const red = new THREE.DirectionalLight(0xCF2F2F, 3.5);
+    // Crimson key light from upper-right
+    const red = new THREE.DirectionalLight(0xCF2F2F, 4.0);
     red.position.set(5, 3, 4);
     this.scene.add(red);
 
-    // Soft white fill from left
-    const fill = new THREE.DirectionalLight(0xffffff, 0.6);
+    // Soft white fill light from left
+    const fill = new THREE.DirectionalLight(0xffffff, 0.8);
     fill.position.set(-4, -1, 2);
     this.scene.add(fill);
   }
@@ -100,10 +102,10 @@ export class HeroScene {
     geo.setAttribute('color',    new THREE.BufferAttribute(col, 3));
 
     const mat = new THREE.PointsMaterial({
-      size:            0.022,
+      size:            0.025,
       vertexColors:    true,
       transparent:     true,
-      opacity:         0.7,
+      opacity:         0.75,
       blending:        THREE.AdditiveBlending,
       depthWrite:      false,
       sizeAttenuation: true,
@@ -115,58 +117,61 @@ export class HeroScene {
 
   // ── Earth Globe ────────────────────────────────────────
   createGlobe() {
-    const loader  = new THREE.TextureLoader();
-    const texture = loader.load('assets/earth-texture.jpg');
-    texture.colorSpace = THREE.SRGBColorSpace;
+    const loader = new THREE.TextureLoader();
 
-    // Main sphere — high segment count for smooth silhouette
+    // Base geometry — high segment count for smooth sphere
     const geo = new THREE.SphereGeometry(1.65, 64, 64);
 
     const mat = new THREE.MeshStandardMaterial({
-      map:             texture,
-      roughness:       0.85,
-      metalness:       0.05,
-      // Darken oceans naturally — the texture already handles it
+      color:     0x110808, // Dark background base before texture loads
+      roughness: 0.8,
+      metalness: 0.1,
     });
 
     this.globe = new THREE.Mesh(geo, mat);
-    // Position to the right, matching the screenshot layout
+    // Position to the right side of the hero section
     this.globe.position.set(2.0, -0.1, 0);
-    // Tilt slightly so Atlantic faces camera (like the screenshot)
     this.globe.rotation.y = -0.6;
     this.scene.add(this.globe);
 
-    // ── Atmosphere glow (additive shell) ──
+    // Load world map texture asynchronously
+    loader.load(
+      'assets/earth-texture.jpg',
+      (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        mat.map = texture;
+        mat.color.setHex(0xffffff); // Reset color multiplier once texture is attached
+        mat.needsUpdate = true;
+      },
+      undefined,
+      (err) => {
+        console.error('Failed to load earth texture:', err);
+      }
+    );
+
+    // Atmosphere glow shell
     this.createAtmosphere();
   }
 
-  // ── Atmosphere — custom shader ─────────────────────────
+  // ── Atmosphere Glow Shader ─────────────────────────────
   createAtmosphere() {
-    // Slightly bigger than the globe
     const geo = new THREE.SphereGeometry(1.82, 64, 64);
 
     const mat = new THREE.ShaderMaterial({
       vertexShader: /* glsl */`
         varying vec3 vNormal;
-        varying vec3 vPosition;
         void main() {
-          vNormal   = normalize(normalMatrix * normal);
-          vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+          vNormal = normalize(normalMatrix * normal);
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
       fragmentShader: /* glsl */`
         varying vec3 vNormal;
-        varying vec3 vPosition;
-
         void main() {
-          // Fresnel — strong at edges, fades in center
-          float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.5);
+          float intensity = pow(0.65 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.2);
           intensity = clamp(intensity, 0.0, 1.0);
-
-          // Crimson glow matching site palette
-          vec3 glowColor = vec3(0.81, 0.12, 0.12); // #CF2F2F
-          gl_FragColor = vec4(glowColor, intensity * 0.9);
+          vec3 glowColor = vec3(0.81, 0.18, 0.18); // #CF2F2F crimson
+          gl_FragColor = vec4(glowColor, intensity * 0.85);
         }
       `,
       side:        THREE.FrontSide,
@@ -180,21 +185,26 @@ export class HeroScene {
     this.scene.add(this.atmosphere);
   }
 
-  // ── Post Processing — Bloom ────────────────────────────
+  // ── Post Processing ────────────────────────────────────
   setupPostProcessing() {
-    const bW = Math.floor(window.innerWidth  / 2);
-    const bH = Math.floor(window.innerHeight / 2);
+    try {
+      const bW = Math.floor(window.innerWidth  / 2);
+      const bH = Math.floor(window.innerHeight / 2);
 
-    this.composer = new EffectComposer(this.renderer);
-    this.composer.addPass(new RenderPass(this.scene, this.camera));
+      this.composer = new EffectComposer(this.renderer);
+      this.composer.addPass(new RenderPass(this.scene, this.camera));
 
-    const bloom = new UnrealBloomPass(
-      new THREE.Vector2(bW, bH),
-      0.65,   // strength
-      0.45,   // radius
-      0.82    // threshold
-    );
-    this.composer.addPass(bloom);
+      const bloom = new UnrealBloomPass(
+        new THREE.Vector2(bW, bH),
+        0.6,    // strength
+        0.4,    // radius
+        0.8     // threshold
+      );
+      this.composer.addPass(bloom);
+    } catch (e) {
+      console.warn('Bloom postprocessing fallback to standard render:', e);
+      this.composer = null;
+    }
   }
 
   // ── Events ─────────────────────────────────────────────
@@ -210,14 +220,20 @@ export class HeroScene {
       this.camera.aspect = w / h;
       this.camera.updateProjectionMatrix();
       this.renderer.setSize(w, h);
-      this.composer.setSize(w, h);
+      if (this.composer) {
+        this.composer.setSize(w, h);
+      }
     });
 
-    // Pause when scrolled out of view
-    const obs = new IntersectionObserver((entries) => {
-      this.isVisible = entries[0].isIntersecting;
-    }, { threshold: 0 });
-    obs.observe(this.canvas);
+    // Pause when canvas is scrolled far off-screen
+    if ('IntersectionObserver' in window) {
+      const obs = new IntersectionObserver((entries) => {
+        if (entries[0]) {
+          this.isVisible = entries[0].isIntersecting;
+        }
+      }, { threshold: 0 });
+      obs.observe(this.canvas);
+    }
   }
 
   // ── Animation Loop ─────────────────────────────────────
@@ -227,30 +243,38 @@ export class HeroScene {
 
     const elapsed = this.clock.getElapsedTime();
 
-    // Smooth mouse lerp
+    // Smooth mouse position
     this.smoothMouse.x += (this.mouse.x - this.smoothMouse.x) * 0.04;
     this.smoothMouse.y += (this.mouse.y - this.smoothMouse.y) * 0.04;
 
-    // Particles drift slowly
-    this.particles.rotation.y = elapsed * 0.035;
-    this.particles.rotation.x = elapsed * 0.012;
+    // Particles drift
+    if (this.particles) {
+      this.particles.rotation.y = elapsed * 0.03;
+      this.particles.rotation.x = elapsed * 0.01;
+    }
 
-    // Globe slow spin on Y axis
-    this.globe.rotation.y += 0.0018;
+    // Globe rotation
+    if (this.globe) {
+      this.globe.rotation.y += 0.002;
+      this.globe.position.y = -0.1 + Math.sin(elapsed * 0.5) * 0.08;
 
-    // Subtle vertical bob
-    this.globe.position.y     = -0.1 + Math.sin(elapsed * 0.5) * 0.08;
-    this.atmosphere.position.y = this.globe.position.y;
+      if (this.atmosphere) {
+        this.atmosphere.position.y = this.globe.position.y;
+        this.atmosphere.rotation.y = this.globe.rotation.y;
+      }
+    }
 
-    // Keep atmosphere in sync with globe rotation
-    this.atmosphere.rotation.y = this.globe.rotation.y;
-
-    // Camera parallax — gentle, not distracting
+    // Camera mouse parallax
     this.camera.position.x = this.smoothMouse.x * 0.8;
     this.camera.position.y = this.smoothMouse.y * 0.5;
     this.camera.lookAt(this.scene.position);
 
-    this.composer.render();
+    // Render pass
+    if (this.composer) {
+      this.composer.render();
+    } else {
+      this.renderer.render(this.scene, this.camera);
+    }
   }
 
   // ── Entry point ────────────────────────────────────────

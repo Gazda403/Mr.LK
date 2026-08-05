@@ -21,12 +21,17 @@ const isMobile = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent)
 
 // ── Boot sequence ——————————————————————————————————————————
 function boot() {
-  // 1. Preloader runs immediately
+  // 1. Initialize 3D Hero Scene immediately so WebGL context & textures load right away
+  let heroScene = null;
+  try {
+    heroScene = new HeroScene();
+  } catch (e) {
+    console.error('Failed to initialize HeroScene:', e);
+  }
+
+  // 2. Preloader runs immediately
   const preloader = new Preloader(() => {
     // —— After preloader completes ——
-
-    // Initialize 3D Earth Hero Scene
-    const heroScene = new HeroScene();
 
     // Gradient bars — CSS-only animations, safe to start now
     initGradientBars('hero-bars', {

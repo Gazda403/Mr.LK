@@ -45,7 +45,7 @@
   --dur-slow:    1.2s;
 
   /* Z-index layers */
-  --z-canvas:    0;
+  --z-canvas:    1;
   --z-content:   10;
   --z-nav:       100;
   --z-cursor:    900;
