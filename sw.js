@@ -1,11 +1,9 @@
 // ============================================================
-//  MR. LK STUDIO — Service Worker
-//  Caches static assets for instant repeat visits
+//  MR. LK STUDIO — Service Worker v3
 // ============================================================
 
-const CACHE = 'mrlk-v2';
+const CACHE = 'mrlk-v3';
 
-// Everything to pre-cache on first install (relative paths for GitHub Pages compatibility)
 const PRECACHE = [
   './',
   './index.html',
@@ -24,14 +22,8 @@ const PRECACHE = [
   './js/vendor/ScrollTrigger.min.js',
   './js/vendor/lenis.min.js',
   './assets/earth-texture.jpg',
-  './assets/projects/project-01.webp',
-  './assets/projects/project-02.webp',
-  './assets/projects/project-03.webp',
-  './assets/projects/project-04.webp',
-  './assets/projects/project-05.webp',
 ];
 
-// Install: pre-cache everything in parallel
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE).then((cache) =>
@@ -41,7 +33,6 @@ self.addEventListener('install', (e) => {
   self.skipWaiting();
 });
 
-// Activate: delete old caches
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) =>
@@ -51,14 +42,14 @@ self.addEventListener('activate', (e) => {
   self.clients.claim();
 });
 
-// Fetch: Cache-first for all requests
 self.addEventListener('fetch', (e) => {
+  // Skip non-GET and non-http(s) requests (e.g. chrome-extension://)
   if (e.request.method !== 'GET') return;
+  if (!e.request.url.startsWith('http')) return;
 
   e.respondWith(
     caches.match(e.request).then((cached) => {
       if (cached) return cached;
-
       return fetch(e.request).then((response) => {
         if (!response || response.status !== 200 || response.type !== 'basic') {
           return response;
