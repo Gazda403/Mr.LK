@@ -1,6 +1,6 @@
 // ============================================================
 //  MR. LK STUDIO — Preloader
-//  Characters stagger in → counter to 100 → reveal site
+//  Faster, reliable preloader animation sequence
 // ============================================================
 
 export class Preloader {
@@ -15,115 +15,79 @@ export class Preloader {
   }
 
   run() {
-    const tl = gsap.timeline({ onComplete: () => this._reveal() });
-
-    // Step 1: Cinematic Word Sequence — WELCOME → TO THE → LK STUDIO
-    if (this.words.length >= 3) {
-      // 1a. "WELCOME"
-      tl.to(this.words[0], {
-        translateY: '0%',
-        opacity: 1,
-        duration: 0.7,
-        ease: 'power3.out',
-      });
-      tl.to(this.words[0], {
-        translateY: '-120%',
-        opacity: 0,
-        duration: 0.5,
-        ease: 'power3.in',
-      }, '+=0.5');
-
-      // 1b. "TO THE"
-      tl.to(this.words[1], {
-        translateY: '0%',
-        opacity: 1,
-        duration: 0.7,
-        ease: 'power3.out',
-      }, '-=0.1');
-      tl.to(this.words[1], {
-        translateY: '-120%',
-        opacity: 0,
-        duration: 0.5,
-        ease: 'power3.in',
-      }, '+=0.5');
-
-      // 1c. "LK STUDIO"
-      tl.to(this.words[2], {
-        translateY: '0%',
-        opacity: 1,
-        duration: 0.7,
-        ease: 'power3.out',
-      }, '-=0.1');
-      tl.to(this.words[2], {
-        translateY: '-120%',
-        opacity: 0,
-        duration: 0.5,
-        ease: 'power3.in',
-      }, '+=0.6');
+    if (!this.el) {
+      if (this.onComplete) this.onComplete();
+      return;
     }
 
-    // Step 2: Line grows in
-    tl.to(this.line, {
-      width: '200px',
-      duration: 1.2,
-      ease: 'power3.out',
-    }, '-=0.1');
+    const tl = gsap.timeline({ onComplete: () => this._reveal() });
 
-    // Step 3: Counter fades in
-    tl.to(this.counter, {
-      opacity: 1,
-      duration: 0.4,
-      ease: 'power2.out',
-    }, '-=0.8');
+    // Step 1: Word Sequence
+    if (this.words.length >= 3) {
+      // 1a. "WELCOME"
+      tl.to(this.words[0], { yPercent: 0, opacity: 1, duration: 0.4, ease: 'power3.out' });
+      tl.to(this.words[0], { yPercent: -120, opacity: 0, duration: 0.3, ease: 'power3.in' }, '+=0.2');
 
-    // Step 4: Counter increments 0 → 100
+      // 1b. "TO THE"
+      tl.to(this.words[1], { yPercent: 0, opacity: 1, duration: 0.4, ease: 'power3.out' });
+      tl.to(this.words[1], { yPercent: -120, opacity: 0, duration: 0.3, ease: 'power3.in' }, '+=0.2');
+
+      // 1c. "LK STUDIO"
+      tl.to(this.words[2], { yPercent: 0, opacity: 1, duration: 0.4, ease: 'power3.out' });
+      tl.to(this.words[2], { yPercent: -120, opacity: 0, duration: 0.3, ease: 'power3.in' }, '+=0.3');
+    }
+
+    // Step 2: Line & Counter
+    tl.to(this.line, { width: '160px', duration: 0.6, ease: 'power3.out' }, '-=0.2');
+    tl.to(this.counter, { opacity: 1, duration: 0.3 }, '-=0.4');
+
+    // Step 3: Fast Counter 0 → 100
     tl.to(this, {
       count: 100,
-      duration: 3.0,
+      duration: 1.2,
       ease: 'power2.inOut',
       onUpdate: () => {
-        this.counter.textContent = Math.round(this.count);
+        if (this.counter) this.counter.textContent = Math.round(this.count);
       },
-    }, '-=0.7');
+    }, '-=0.4');
 
-    // Step 5: Logo "MR. LK" characters animate in with stagger
-    tl.to(this.chars, {
-      translateY: '0%',
-      opacity: 1,
-      duration: 1.0,
-      stagger: 0.08,
-      ease: 'power4.out',
-    }, '-=2.2');
-
-    // Step 6: Final hold for WebGL ready
-    tl.to({}, { duration: 0.6 });
+    // Step 4: Logo Characters
+    if (this.chars.length > 0) {
+      tl.to(this.chars, {
+        yPercent: 0,
+        opacity: 1,
+        duration: 0.6,
+        stagger: 0.05,
+        ease: 'power4.out',
+      }, '-=1.0');
+    }
   }
 
   _reveal() {
-    const tl = gsap.timeline({ onComplete: () => {
-      this.el.style.display = 'none';
-      this.onComplete();
-    }});
-
-    // Characters scatter upward
-    tl.to(this.chars, {
-      translateY: '-120%',
-      opacity: 0,
-      duration: 0.6,
-      stagger: 0.04,
-      ease: 'power3.in',
+    const tl = gsap.timeline({
+      onComplete: () => {
+        if (this.el) this.el.style.display = 'none';
+        if (this.onComplete) this.onComplete();
+      }
     });
 
-    // Counter fades
-    tl.to(this.counter, {
-      opacity: 0,
-      duration: 0.3,
-    }, '-=0.4');
+    if (this.chars.length > 0) {
+      tl.to(this.chars, {
+        yPercent: -120,
+        opacity: 0,
+        duration: 0.4,
+        stagger: 0.03,
+        ease: 'power3.in',
+      });
+    }
 
-    // Overlay slides up
+    if (this.counter) {
+      tl.to(this.counter, { opacity: 0, duration: 0.2 }, '-=0.3');
+    }
+
     tl.to(this.el, {
       clipPath: 'inset(0 0 100% 0)',
-      duration: 1.0,
+      duration: 0.7,
       ease: 'power4.inOut',
     }, '-=0.2');
   }
