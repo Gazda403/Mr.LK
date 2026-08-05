@@ -4,6 +4,7 @@
 // ============================================================
 
 import { Preloader }           from './preloader.js';
+import { HeroScene }           from './scene.js';
 import { Cursor }              from './cursor.js';
 import { initScroll }          from './scroll.js';
 import { revealHero, initScrollAnimations } from './animations.js';
@@ -20,16 +21,12 @@ const isMobile = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent)
 
 // ── Boot sequence ——————————————————————————————————————————
 function boot() {
-  // 1. Preloader runs immediately — nothing else touches the GPU during this window
-  //    so Spline has 100% of the WebGL context to compile shaders uncontested.
+  // 1. Preloader runs immediately
   const preloader = new Preloader(() => {
-    // —— After preloader completes (Spline 3D scene fully rendered behind curtain) ——
+    // —— After preloader completes ——
 
-    // Reveal Spline iframe after preloader
-    const splineEl = document.getElementById('hero-spline');
-    if (splineEl) {
-      gsap.to(splineEl, { opacity: 1, duration: 1.5, ease: 'power2.out' });
-    }
+    // Initialize 3D Earth Hero Scene
+    const heroScene = new HeroScene();
 
     // Gradient bars — CSS-only animations, safe to start now
     initGradientBars('hero-bars', {
