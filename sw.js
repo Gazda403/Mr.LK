@@ -1,40 +1,42 @@
 // ============================================================
 //  MR. LK STUDIO — Service Worker
-//  Caches all static assets for instant repeat visits
+//  Caches static assets for instant repeat visits
 // ============================================================
 
-const CACHE = 'mrlk-v1';
+const CACHE = 'mrlk-v2';
 
-// Everything to pre-cache on first install
+// Everything to pre-cache on first install (relative paths for GitHub Pages compatibility)
 const PRECACHE = [
-  '/',
-  '/index.html',
-  '/css/variables.css',
-  '/css/main.css',
-  '/js/main.js',
-  '/js/scene.js',
-  '/js/preloader.js',
-  '/js/cursor.js',
-  '/js/scroll.js',
-  '/js/animations.js',
-  '/js/gradientBars.js',
-  '/js/scrollPath.js',
-  '/js/fluidParticles.js',
-  '/js/vendor/gsap.min.js',
-  '/js/vendor/ScrollTrigger.min.js',
-  '/js/vendor/lenis.min.js',
-  '/assets/earth-texture.jpg',
-  '/assets/projects/project-01.webp',
-  '/assets/projects/project-02.webp',
-  '/assets/projects/project-03.webp',
-  '/assets/projects/project-04.webp',
-  '/assets/projects/project-05.webp',
+  './',
+  './index.html',
+  './css/variables.css',
+  './css/main.css',
+  './js/main.js',
+  './js/scene.js',
+  './js/preloader.js',
+  './js/cursor.js',
+  './js/scroll.js',
+  './js/animations.js',
+  './js/gradientBars.js',
+  './js/scrollPath.js',
+  './js/fluidParticles.js',
+  './js/vendor/gsap.min.js',
+  './js/vendor/ScrollTrigger.min.js',
+  './js/vendor/lenis.min.js',
+  './assets/earth-texture.jpg',
+  './assets/projects/project-01.webp',
+  './assets/projects/project-02.webp',
+  './assets/projects/project-03.webp',
+  './assets/projects/project-04.webp',
+  './assets/projects/project-05.webp',
 ];
 
 // Install: pre-cache everything in parallel
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE).then((cache) => cache.addAll(PRECACHE))
+    caches.open(CACHE).then((cache) =>
+      Promise.allSettled(PRECACHE.map((url) => cache.add(url)))
+    )
   );
   self.skipWaiting();
 });
@@ -51,22 +53,20 @@ self.addEventListener('activate', (e) => {
 
 // Fetch: Cache-first for all requests
 self.addEventListener('fetch', (e) => {
-  // Only handle GET, skip cross-origin non-CDN
   if (e.request.method !== 'GET') return;
 
   e.respondWith(
     caches.match(e.request).then((cached) => {
       if (cached) return cached;
 
-      // Not in cache yet — fetch, clone, store
       return fetch(e.request).then((response) => {
-        if (!response || response.status !== 200 || response.type === 'error') {
+        if (!response || response.status !== 200 || response.type !== 'basic') {
           return response;
         }
         const clone = response.clone();
         caches.open(CACHE).then((cache) => cache.put(e.request, clone));
         return response;
-      });
+      }).catch(() => cached);
     })
   );
 });
