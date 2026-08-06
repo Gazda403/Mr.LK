@@ -160,12 +160,28 @@
       });
       this.globe = new THREE.Mesh(geoSphere, matGlobe);
 
-      /* Position safely inside viewport on ALL screens (laptop, desktop, mobile) */
-      var gx = window.innerWidth < 1024 ? 0 : 0.85;
+      /* Position safely inside viewport on ALL screens (desktop PC, laptop, mobile) */
+      var gx = window.innerWidth < 1024 ? 0 : (window.innerWidth > 1600 ? 1.3 : 1.0);
       var gy = window.innerWidth < 1024 ? -0.4 : 0;
       this.globe.position.set(gx, gy, 0);
       this.globe.rotation.y = -0.5;
       this.scene.add(this.globe);
+
+      /* Load user's high-resolution glowing world map image texture */
+      if (typeof THREE.TextureLoader !== 'undefined') {
+        new THREE.TextureLoader().load(
+          './assets/earth-texture.jpg',
+          function (imgTex) {
+            matGlobe.map = imgTex;
+            matGlobe.needsUpdate = true;
+            console.log('[HeroScene] User world map image texture loaded ✓');
+          },
+          undefined,
+          function (err) {
+            console.log('[HeroScene] Using procedural texture fallback ✓');
+          }
+        );
+      }
 
       /* ── Atmosphere Halo ── */
       var matAtmo = new THREE.ShaderMaterial({
@@ -260,7 +276,7 @@
         self.camera.updateProjectionMatrix();
         self.renderer.setSize(w, h);
         if (self.globe) {
-          var ngx = w < 1024 ? 0 : 0.85;
+          var ngx = w < 1024 ? 0 : (w > 1600 ? 1.3 : 1.0);
           var ngy = w < 1024 ? -0.4 : 0;
           self.globe.position.set(ngx, ngy, 0);
           if (self.atmosphere) self.atmosphere.position.copy(self.globe.position);
