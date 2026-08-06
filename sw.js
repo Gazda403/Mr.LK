@@ -2,7 +2,7 @@
 //  MR. LK STUDIO — Service Worker v3
 // ============================================================
 
-const CACHE = 'mrlk-v20';
+const CACHE = 'mrlk-v30';
 
 const PRECACHE = [
   './',
