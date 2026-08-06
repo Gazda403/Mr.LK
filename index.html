@@ -27,21 +27,11 @@
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/main.css">
 
-  <!-- GSAP & Lenis (local vendor) -->
+  <!-- GSAP, Lenis & Three.js (local vendor scripts — 100% offline & file:// compatible) -->
   <script src="js/vendor/gsap.min.js"></script>
   <script src="js/vendor/ScrollTrigger.min.js"></script>
   <script src="js/vendor/lenis.min.js"></script>
-
-  <!-- Three.js import map -->
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
-    }
-  }
-  </script>
-  <link rel="modulepreload" href="js/main.js">
+  <script src="js/vendor/three.min.js"></script>
 </head>
 <body>
 
@@ -416,8 +406,26 @@
     <p class="footer__right">Built with <span>intention</span></p>
   </footer>
 
-  <!-- Main JS entry (module) -->
-  <script type="module" src="js/main.js"></script>
+  <!-- Diagnostic: verify THREE loaded before app scripts -->
+  <script>
+    console.log('[MR.LK BOOT] THREE available:', typeof THREE !== 'undefined');
+    console.log('[MR.LK BOOT] THREE.WebGLRenderer:', typeof THREE !== 'undefined' && typeof THREE.WebGLRenderer !== 'undefined');
+    if (typeof THREE === 'undefined') {
+      document.getElementById('hero-canvas').style.background = 'red';
+      console.error('THREE FAILED TO LOAD - check vendor/three.min.js!');
+    }
+  </script>
+
+  <!-- Application Scripts (Non-module for 100% file:// & local server support) -->
+  <script src="js/preloader.js"></script>
+  <script src="js/scene.js"></script>
+  <script src="js/cursor.js"></script>
+  <script src="js/scroll.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/gradientBars.js"></script>
+  <script src="js/scrollPath.js"></script>
+  <script src="js/fluidParticles.js"></script>
+  <script src="js/main.js"></script>
 
   <!-- Service Worker — registers immediately for instant repeat visits -->
   <script>

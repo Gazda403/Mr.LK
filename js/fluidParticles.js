@@ -81,7 +81,7 @@ function createNoise() {
   };
 }
 
-export function initFluidParticles(canvasId, {
+window.initFluidParticles = function initFluidParticles(canvasId, {
   particleCount = 2000,
   noiseIntensity = 0.003,
   particleSize = { min: 0.8, max: 2.8 },

@@ -1,65 +1,74 @@
 // ============================================================
 //  MR. LK STUDIO — Main Entry Point
 //  Orchestrates: preloader → scene → scroll → animations → cursor
+//  100% Standalone (Supports direct file:// execution & web servers)
 // ============================================================
 
-import { Preloader }           from './preloader.js';
-import { HeroScene }           from './scene.js';
-import { Cursor }              from './cursor.js';
-import { initScroll }          from './scroll.js';
-import { revealHero, initScrollAnimations } from './animations.js';
-import { initGradientBars }      from './gradientBars.js';
-import { initScrollPath }        from './scrollPath.js';
-import { initFluidParticles }    from './fluidParticles.js';
-
-// Register GSAP plugins (available as globals from CDN)
-gsap.registerPlugin(ScrollTrigger);
+// Register GSAP plugins (available as globals)
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 // ── Mobile detection ──────────────────────────────────────
 const isMobile = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent)
   || window.innerWidth < 768;
 
-// ── Boot sequence ——————————————————————————————————————————
+// ── Boot sequence ──────────────────────────────────────────
 function boot() {
-  // 1. Initialize 3D Hero Scene immediately so WebGL context & textures load right away
+  console.log('[MR. LK] Booting application sequence...');
+
+  // 1. Initialize 3D Hero Globe Scene immediately
   let heroScene = null;
-  try {
-    heroScene = new HeroScene();
-  } catch (e) {
-    console.error('Failed to initialize HeroScene:', e);
+  if (typeof window.HeroScene !== 'undefined') {
+    try {
+      heroScene = new window.HeroScene();
+    } catch (e) {
+      console.error('Failed to initialize HeroScene:', e);
+    }
   }
 
   // 2. Preloader runs immediately
-  const preloader = new Preloader(() => {
+  const PreloaderClass = window.Preloader || class { constructor(cb) { this.cb = cb; } run() { if (this.cb) this.cb(); } };
+
+  const preloader = new PreloaderClass(() => {
     // —— After preloader completes ——
 
-    // Gradient bars — CSS-only animations, safe to start now
-    initGradientBars('hero-bars', {
-      numBars: 15,
-      gradientFrom: 'rgba(207, 47, 47, 0.4)',
-      gradientTo: 'transparent',
-      animationDuration: 2.5
-    });
+    // Gradient bars
+    if (typeof window.initGradientBars === 'function') {
+      window.initGradientBars('hero-bars', {
+        numBars: 15,
+        gradientFrom: 'rgba(207, 47, 47, 0.4)',
+        gradientTo: 'transparent',
+        animationDuration: 2.5
+      });
+    }
 
-    // Cursor (not needed during preloader since it covers the full screen)
-    const cursor = new Cursor();
+    // Custom Cursor
+    if (typeof window.Cursor !== 'undefined') {
+      new window.Cursor();
+    }
 
-    // Init smooth scroll
-    const lenis = initScroll();
+    // Init smooth scroll (Lenis)
+    if (typeof window.initScroll === 'function') {
+      window.initScroll();
+    }
 
     // Hero text reveal
-    revealHero();
+    if (typeof window.revealHero === 'function') {
+      window.revealHero();
+    }
 
     // Defer all scroll-animation setup — not needed until user scrolls
-    // Use requestIdleCallback if available so it doesn't fight Spline's first frames
     const initScrollFeatures = () => {
-      initScrollAnimations();
-      ScrollTrigger.refresh();
-      initScrollPath();
-      initFluidParticles('fluid-particles-canvas', {
-        particleCount: isMobile ? 0 : 1200,
-        noiseIntensity: 0.003,
-      });
+      if (typeof window.initScrollAnimations === 'function') window.initScrollAnimations();
+      if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+      if (typeof window.initScrollPath === 'function') window.initScrollPath();
+      if (typeof window.initFluidParticles === 'function') {
+        window.initFluidParticles('fluid-particles-canvas', {
+          particleCount: isMobile ? 0 : 1200,
+          noiseIntensity: 0.003,
+        });
+      }
     };
 
     if ('requestIdleCallback' in window) {

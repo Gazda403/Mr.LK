@@ -23,7 +23,7 @@ function splitChars(el) {
 }
 
 // ── Hero entrance animation (called after preloader) ──────
-export function revealHero() {
+window.revealHero = function revealHero() {
   const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
 
   // Nav
@@ -70,7 +70,7 @@ export function revealHero() {
 }
 
 // ── Scroll-triggered animations ───────────────────────────
-export function initScrollAnimations() {
+window.initScrollAnimations = function initScrollAnimations() {
   ScrollTrigger.defaults({ markers: false });
 
   // Generic [data-reveal] elements

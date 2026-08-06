@@ -2,7 +2,7 @@
 //  MR. LK STUDIO — Custom Cursor
 // ============================================================
 
-export class Cursor {
+window.Cursor = class Cursor {
   constructor() {
     this.dot      = document.querySelector('.cursor');
     this.ring     = document.querySelector('.cursor-follower');

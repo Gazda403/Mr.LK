@@ -4,7 +4,7 @@
 //  Creates pulsing vertical gradient bars (bar chart / equalizer effect)
 // ============================================================
 
-export function initGradientBars(containerId = 'hero-bars', options = {}) {
+window.initGradientBars = function initGradientBars(containerId = 'hero-bars', options = {}) {
   const {
     numBars           = 15,
     gradientFrom      = '#CF2F2F',

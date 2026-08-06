@@ -3,7 +3,7 @@
 //  Faster, reliable preloader animation sequence
 // ============================================================
 
-export class Preloader {
+window.Preloader = class Preloader {
   constructor(onComplete) {
     this.onComplete = onComplete;
     this.el         = document.getElementById('preloader');

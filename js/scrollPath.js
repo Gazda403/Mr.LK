@@ -5,7 +5,7 @@
 //  every frame, so it works regardless of scroll implementation.
 // ============================================================
 
-export function initScrollPath() {
+window.initScrollPath = function initScrollPath() {
   const svg   = document.getElementById('scroll-path-svg');
   const scene = document.getElementById('path-scene');
   if (!svg || !scene) return;
