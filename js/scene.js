@@ -1,9 +1,10 @@
 // ============================================================
 //  MR. LK STUDIO — Three.js Hero Globe
-//  Bulletproof build: no imports, no modules, pure global THREE
+//  Vibrant High-Contrast 3D Earth (CORS & File:// Compatible)
 // ============================================================
 
 (function () {
+  'use strict';
 
   if (typeof THREE === 'undefined') {
     console.error('[HeroScene] THREE.js not loaded!');
@@ -12,8 +13,7 @@
   }
 
   // ──────────────────────────────────────────────────────────
-  //  Procedural World-Map Canvas Texture
-  //  Bright enough to be clearly visible against #0A0A0A
+  //  Procedural World-Map Canvas Texture (Vibrant Glowing Colors)
   // ──────────────────────────────────────────────────────────
   function buildTexture() {
     var W = 2048, H = 1024;
@@ -21,26 +21,26 @@
     c.width = W; c.height = H;
     var ctx = c.getContext('2d');
 
-    /* ── Ocean base — dark navy so the sphere reads as a globe ── */
-    ctx.fillStyle = '#0d1b2e';
+    /* ── Ocean base — deep rich navy black ── */
+    ctx.fillStyle = '#0f172a';
     ctx.fillRect(0, 0, W, H);
 
     /* ── Grid ── */
-    ctx.strokeStyle = 'rgba(207,47,47,0.18)';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.25)';
+    ctx.lineWidth = 1.5;
     for (var ly = 0; ly <= H; ly += H / 12) {
       ctx.beginPath(); ctx.moveTo(0, ly); ctx.lineTo(W, ly); ctx.stroke();
     }
     for (var lx = 0; lx <= W; lx += W / 24) {
       ctx.beginPath(); ctx.moveTo(lx, 0); ctx.lineTo(lx, H); ctx.stroke();
     }
-    /* equator */
-    ctx.strokeStyle = 'rgba(207,47,47,0.5)';
-    ctx.lineWidth = 2;
+    /* Equator line */
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.6)';
+    ctx.lineWidth = 3;
     ctx.beginPath(); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke();
 
-    /* ── Continent dot-matrix ── */
-    function land(lon, lat) {
+    /* ── Continent detection ── */
+    function isLand(lon, lat) {
       if (lon > -160 && lon < -50 && lat > 15  && lat < 75)  return true; // N.America
       if (lon > -85  && lon < -35 && lat > -55 && lat < 12)  return true; // S.America
       if (lon > -10  && lon < 45  && lat > 35  && lat < 70)  return true; // Europe
@@ -56,41 +56,41 @@
       var lat = 90 - (py / H) * 180;
       for (var px = step; px < W; px += step) {
         var lon = (px / W) * 360 - 180;
-        if (land(lon, lat)) {
-          /* Land fill */
-          ctx.fillStyle = '#1a0a0a';
-          ctx.fillRect(px - 3, py - 3, 6, 6);
-          /* Bright red dot on top */
-          ctx.fillStyle = 'rgba(220,50,50,0.95)';
+        if (isLand(lon, lat)) {
+          /* Land dark crimson fill */
+          ctx.fillStyle = '#2b0b0b';
+          ctx.fillRect(px - 3.5, py - 3.5, 7, 7);
+          /* Neon red dot */
+          ctx.fillStyle = '#ff2222';
           ctx.beginPath();
-          ctx.arc(px, py, 2.2, 0, Math.PI * 2);
+          ctx.arc(px, py, 2.5, 0, Math.PI * 2);
           ctx.fill();
         }
       }
     }
 
-    /* ── City glow nodes ── */
+    /* ── Glowing Tech Hub Cities ── */
     var cities = [
-      { lon: 139.69, lat: 35.68  },
-      { lon: -0.12,  lat: 51.50  },
-      { lon: -74.00, lat: 40.71  },
-      { lon: 151.20, lat: -33.86 },
-      { lon: 55.27,  lat: 25.20  },
-      { lon: 13.40,  lat: 52.52  },
-      { lon: -122.4, lat: 37.77  },
-      { lon: 103.81, lat: 1.35   },
+      { lon: 139.69, lat: 35.68  }, // Tokyo
+      { lon: -0.12,  lat: 51.50  }, // London
+      { lon: -74.00, lat: 40.71  }, // New York
+      { lon: 151.20, lat: -33.86 }, // Sydney
+      { lon: 55.27,  lat: 25.20  }, // Dubai
+      { lon: 13.40,  lat: 52.52  }, // Berlin
+      { lon: -122.4, lat: 37.77  }, // San Francisco
+      { lon: 103.81, lat: 1.35   }, // Singapore
     ];
     cities.forEach(function (city) {
       var cx = ((city.lon + 180) / 360) * W;
       var cy = ((90 - city.lat) / 180) * H;
-      var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 20);
+      var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 25);
       g.addColorStop(0,   'rgba(255,255,255,1)');
-      g.addColorStop(0.4, 'rgba(220,50,50,1)');
-      g.addColorStop(1,   'rgba(220,50,50,0)');
+      g.addColorStop(0.35, 'rgba(255,40,40,1)');
+      g.addColorStop(1,   'rgba(255,40,40,0)');
       ctx.fillStyle = g;
-      ctx.beginPath(); ctx.arc(cx, cy, 20, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#fff';
-      ctx.beginPath(); ctx.arc(cx, cy, 3.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, cy, 25, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI * 2); ctx.fill();
     });
 
     var tex = new THREE.CanvasTexture(c);
@@ -99,7 +99,7 @@
   }
 
   // ──────────────────────────────────────────────────────────
-  //  HeroScene
+  //  HeroScene Class
   // ──────────────────────────────────────────────────────────
   function HeroScene() {
     this.canvas      = document.getElementById('hero-canvas');
@@ -117,13 +117,12 @@
     this.isVisible   = true;
 
     if (!this.canvas) { console.warn('[HeroScene] canvas missing'); return; }
-
     this._boot();
   }
 
   HeroScene.prototype._boot = function () {
     try {
-      /* ── Renderer ── */
+      /* ── WebGL Renderer ── */
       this.renderer = new THREE.WebGLRenderer({
         canvas:          this.canvas,
         antialias:       true,
@@ -132,46 +131,45 @@
       });
       this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       this.renderer.setSize(window.innerWidth, window.innerHeight);
-      /* Explicit clear: transparent so page bg shows through */
       this.renderer.setClearColor(0x000000, 0);
 
-      /* ── Scene ── */
+      /* ── Scene & Camera ── */
       this.scene  = new THREE.Scene();
       this.camera = new THREE.PerspectiveCamera(
         45, window.innerWidth / window.innerHeight, 0.1, 300
       );
-      this.camera.position.z = 6.5;
+      this.camera.position.set(0, 0, 6.2);
 
       /* ── Lights ── */
-      this.scene.add(new THREE.AmbientLight(0x888888, 1.0));
+      this.scene.add(new THREE.AmbientLight(0xffffff, 1.2));
 
-      var sun = new THREE.DirectionalLight(0xffffff, 2.8);
-      sun.position.set(5, 4, 6);
+      var sun = new THREE.DirectionalLight(0xffffff, 3.5);
+      sun.position.set(6, 4, 6);
       this.scene.add(sun);
 
-      var rim = new THREE.DirectionalLight(0xff2222, 5.0);
-      rim.position.set(-6, 1, -3);
+      var rim = new THREE.DirectionalLight(0xff3333, 6.0);
+      rim.position.set(-6, 2, -2);
       this.scene.add(rim);
 
-      /* ── Globe ── */
-      var radius = window.innerWidth < 768 ? 1.2 : 1.6;
-      var geoSphere = new THREE.SphereGeometry(radius, 72, 72);
+      /* ── 3D Earth Globe ── */
+      var radius = window.innerWidth < 768 ? 1.3 : 1.7;
+      var geoSphere = new THREE.SphereGeometry(radius, 64, 64);
       var tex = buildTexture();
 
       var matGlobe = new THREE.MeshPhongMaterial({
         map:       tex,
-        emissive:  new THREE.Color(0x200000),
-        shininess: 60,
+        emissive:  new THREE.Color(0x280505),
+        shininess: 50,
       });
       this.globe = new THREE.Mesh(geoSphere, matGlobe);
 
-      var gx = window.innerWidth < 1024 ? 0 : 1.6;
-      var gy = window.innerWidth < 1024 ? -0.6 : 0;
+      var gx = window.innerWidth < 1024 ? 0 : 1.55;
+      var gy = window.innerWidth < 1024 ? -0.5 : 0;
       this.globe.position.set(gx, gy, 0);
       this.globe.rotation.y = -0.5;
       this.scene.add(this.globe);
 
-      /* ── Atmosphere glow ── */
+      /* ── Atmosphere Halo ── */
       var matAtmo = new THREE.ShaderMaterial({
         uniforms: {},
         vertexShader: [
@@ -185,7 +183,7 @@
           'varying vec3 vN;',
           'void main(){',
           '  float i = pow(0.65 - dot(vN, vec3(0.0,0.0,1.0)), 2.6);',
-          '  gl_FragColor = vec4(0.95, 0.15, 0.15, clamp(i,0.0,1.0) * 0.9);',
+          '  gl_FragColor = vec4(1.0, 0.2, 0.2, clamp(i,0.0,1.0) * 0.95);',
           '}',
         ].join('\n'),
         side:        THREE.FrontSide,
@@ -200,37 +198,37 @@
       this.atmosphere.position.copy(this.globe.position);
       this.scene.add(this.atmosphere);
 
-      /* ── Orbiting data ring ── */
-      var ringCount = 300;
+      /* ── Orbiting Data Ring ── */
+      var ringCount = 360;
       var rPos = new Float32Array(ringCount * 3);
-      var ringR = radius * 1.45;
+      var ringR = radius * 1.42;
       for (var ri = 0; ri < ringCount; ri++) {
         var ang = (ri / ringCount) * Math.PI * 2;
-        var rr = ringR + (Math.random() - 0.5) * 0.12;
+        var rr = ringR + (Math.random() - 0.5) * 0.15;
         rPos[ri*3]   = Math.cos(ang) * rr;
-        rPos[ri*3+1] = (Math.random() - 0.5) * 0.06;
+        rPos[ri*3+1] = (Math.random() - 0.5) * 0.08;
         rPos[ri*3+2] = Math.sin(ang) * rr;
       }
       var ringGeo = new THREE.BufferGeometry();
       ringGeo.setAttribute('position', new THREE.BufferAttribute(rPos, 3));
       this.ring = new THREE.Points(ringGeo, new THREE.PointsMaterial({
-        color: 0xff3333, size: 0.045,
-        transparent: true, opacity: 0.9,
+        color: 0xff2222, size: 0.048,
+        transparent: true, opacity: 0.95,
         blending: THREE.AdditiveBlending, depthWrite: false,
       }));
       this.ring.rotation.x = 0.38;
       this.ring.position.copy(this.globe.position);
       this.scene.add(this.ring);
 
-      /* ── Background particles ── */
-      var pCount = 1400;
+      /* ── Ambient Floating Particles ── */
+      var pCount = 1500;
       var pPos = new Float32Array(pCount * 3);
       var pCol = new Float32Array(pCount * 3);
       var pal = [
-        [0.85, 0.18, 0.18],
-        [1.0,  0.4,  0.4 ],
-        [1.0,  1.0,  1.0 ],
-        [0.5,  0.5,  0.5 ],
+        [1.0, 0.2, 0.2],
+        [1.0, 0.5, 0.5],
+        [1.0, 1.0, 1.0],
+        [0.6, 0.6, 0.6],
       ];
       for (var pi = 0; pi < pCount; pi++) {
         var th = Math.random() * Math.PI * 2;
@@ -246,8 +244,8 @@
       pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
       pGeo.setAttribute('color',    new THREE.BufferAttribute(pCol, 3));
       this.particles = new THREE.Points(pGeo, new THREE.PointsMaterial({
-        size: 0.03, vertexColors: true,
-        transparent: true, opacity: 0.7,
+        size: 0.032, vertexColors: true,
+        transparent: true, opacity: 0.75,
         blending: THREE.AdditiveBlending, depthWrite: false,
       }));
       this.scene.add(this.particles);
@@ -264,8 +262,8 @@
         self.camera.updateProjectionMatrix();
         self.renderer.setSize(w, h);
         if (self.globe) {
-          var ngx = w < 1024 ? 0 : 1.6;
-          var ngy = w < 1024 ? -0.6 : 0;
+          var ngx = w < 1024 ? 0 : 1.55;
+          var ngy = w < 1024 ? -0.5 : 0;
           self.globe.position.set(ngx, ngy, 0);
           if (self.atmosphere) self.atmosphere.position.copy(self.globe.position);
           if (self.ring)       self.ring.position.copy(self.globe.position);
@@ -277,10 +275,10 @@
         }, { threshold: 0 }).observe(this.canvas);
       }
 
-      /* ── Start render loop ── */
+      /* ── Start Render Ticker ── */
       this._tick();
 
-      console.log('[HeroScene] Globe initialized successfully ✓');
+      console.log('[HeroScene] Vibrant 3D globe loaded ✓');
     } catch (e) {
       console.error('[HeroScene] Boot failed:', e);
     }
@@ -293,32 +291,32 @@
 
     var t = this.clock.getElapsedTime();
 
-    /* smooth mouse */
+    /* Smooth Mouse lerp */
     this.mx += (this.mouse.x - this.mx) * 0.05;
     this.my += (this.mouse.y - this.my) * 0.05;
 
-    /* particle drift */
+    /* Background drift */
     if (this.particles) {
-      this.particles.rotation.y = t * 0.022;
-      this.particles.rotation.x = t * 0.007;
+      this.particles.rotation.y = t * 0.025;
+      this.particles.rotation.x = t * 0.008;
     }
 
-    /* globe spin + float */
+    /* Globe rotation & float */
     if (this.globe) {
-      this.globe.rotation.y += 0.0030;
-      var baseY = window.innerWidth < 1024 ? -0.6 : 0;
+      this.globe.rotation.y += 0.0035;
+      var baseY = window.innerWidth < 1024 ? -0.5 : 0;
       this.globe.position.y = baseY + Math.sin(t * 0.55) * 0.06;
 
       if (this.atmosphere) this.atmosphere.position.y = this.globe.position.y;
       if (this.ring) {
         this.ring.position.y = this.globe.position.y;
-        this.ring.rotation.y = t * 0.12;
+        this.ring.rotation.y = t * 0.14;
       }
     }
 
-    /* camera drift with mouse */
-    this.camera.position.x += (this.mx * 0.5 - this.camera.position.x) * 0.08;
-    this.camera.position.y += (this.my * 0.3 - this.camera.position.y) * 0.08;
+    /* Interactive camera tilt */
+    this.camera.position.x = this.mx * 0.5;
+    this.camera.position.y = this.my * 0.3;
     this.camera.lookAt(0, 0, 0);
 
     this.renderer.render(this.scene, this.camera);

@@ -143,18 +143,21 @@ window.initScrollAnimations = function initScrollAnimations() {
     }
   );
 
-  // Hero 3D object scale out on scroll
-  gsap.to('#hero-canvas', {
-    opacity: 0,
-    scale:   0.96,
-    ease:    'none',
-    scrollTrigger: {
-      trigger: '#hero',
-      start:   'bottom 80%',
-      end:     'bottom top',
-      scrub:   true,
-    },
-  });
+  // Hero 3D object fade/scale on scroll
+  gsap.fromTo('#hero-canvas',
+    { opacity: 1, scale: 1 },
+    {
+      opacity: 0,
+      scale:   0.96,
+      ease:    'none',
+      scrollTrigger: {
+        trigger: '#hero',
+        start:   'top top',
+        end:     'bottom top',
+        scrub:   true,
+      },
+    }
+  );
 }
 
 // ── Horizontal scroll setup ───────────────────────────────
