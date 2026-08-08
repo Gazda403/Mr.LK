@@ -2,7 +2,7 @@
 //  MR. LK STUDIO — Service Worker v3
 // ============================================================
 
-const CACHE = 'mrlk-v60';
+const CACHE = 'mrlk-v140';
 
 const PRECACHE = [
   './',
@@ -21,6 +21,7 @@ const PRECACHE = [
   './js/vendor/gsap.min.js',
   './js/vendor/ScrollTrigger.min.js',
   './js/vendor/lenis.min.js',
+  './js/vendor/three.min.js',
   './assets/earth-texture.jpg',
 ];
 

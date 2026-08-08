@@ -4,6 +4,14 @@
 
 /* Reset */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+::selection {
+  background: var(--c-gold);
+  color: var(--c-white);
+}
+::-moz-selection {
+  background: var(--c-gold);
+  color: var(--c-white);
+}
 html { scroll-behavior: auto; }
 body {
   background: var(--c-void);
@@ -248,12 +256,16 @@ nav {
 #hero-canvas {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
   z-index: 2;
   border: none;
   pointer-events: none;  /* let clicks pass to hero text */
-  display: block;
+  display: block !important;  /* NEVER hide — WebGL context fails on display:none */
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: translateZ(0);  /* force GPU compositing layer */
+  will-change: transform;
 }
 
 .hero__content {
@@ -482,7 +494,9 @@ nav {
   height: clamp(360px, 58vh, 600px);
   flex-shrink: 0;
   overflow: hidden;
-  border-radius: 4px;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(207, 47, 47, 0.10), 0 1px 8px rgba(207, 47, 47, 0.07);
+  transition: box-shadow 0.4s var(--ease-out);
 }
 .project-card__img {
   position: absolute;
@@ -491,10 +505,14 @@ nav {
   transform: scale(1.05);
   transition: transform 0.8s var(--ease-out);
   filter: brightness(0.7);
+  border-radius: 12px;
 }
 .project-card:hover .project-card__img {
   transform: scale(1);
   filter: brightness(0.85);
+}
+.project-card:hover {
+  box-shadow: 0 6px 36px rgba(207, 47, 47, 0.18), 0 2px 14px rgba(207, 47, 47, 0.10);
 }
 .project-card__overlay {
   position: absolute;
@@ -929,7 +947,9 @@ section[id], h2[id], h3[id] {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  #hero-canvas { display: none !important; }
+  /* NOTE: Do NOT hide #hero-canvas here — WebGL context creation fails
+     on display:none elements and then stays broken even after showing.
+     The globe will simply not animate (which is fine for reduced motion). */
   .cursor, .cursor-follower, .cursor-label { display: none !important; }
   body { cursor: auto !important; }
   a, button { cursor: pointer !important; }

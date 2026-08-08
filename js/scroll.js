@@ -11,6 +11,9 @@ window.initScroll = function initScroll() {
     smoothTouch: false,
   });
 
+  // Expose globally so other modules (e.g. process.js) can stop/start
+  window._lenis = lenis;
+
   // Sync Lenis with GSAP ticker for ScrollTrigger
   gsap.ticker.add((time) => {
     lenis.raf(time * 1000);

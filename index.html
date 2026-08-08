@@ -26,6 +26,7 @@
   <!-- Styles -->
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/process.css">
 
   <!-- GSAP, Lenis & Three.js (local vendor scripts — 100% offline & file:// compatible) -->
   <script src="js/vendor/gsap.min.js"></script>
@@ -130,8 +131,8 @@
           </picture>
           <div class="project-card__overlay"></div>
           <div class="project-card__info">
-            <p class="project-card__tags">Brand Identity · Web Design</p>
-            <h3 class="project-card__name">Luminos</h3>
+            <p class="project-card__tags">Brand Identity · Web Design · App Development</p>
+            <h3 class="project-card__name">Full Digital Transformation</h3>
           </div>
           <div class="project-card__arrow" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -147,8 +148,8 @@
           </picture>
           <div class="project-card__overlay"></div>
           <div class="project-card__info">
-            <p class="project-card__tags">3D · Motion Design</p>
-            <h3 class="project-card__name">Voidex</h3>
+            <p class="project-card__tags">Web Design</p>
+            <h3 class="project-card__name">Amazing Components</h3>
           </div>
           <div class="project-card__arrow" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -165,7 +166,7 @@
           <div class="project-card__overlay"></div>
           <div class="project-card__info">
             <p class="project-card__tags">Interactive · Art Direction</p>
-            <h3 class="project-card__name">Prism</h3>
+            <h3 class="project-card__name">Animated Hero Section</h3>
           </div>
           <div class="project-card__arrow" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -182,7 +183,7 @@
           <div class="project-card__overlay"></div>
           <div class="project-card__info">
             <p class="project-card__tags">Development · UX Design</p>
-            <h3 class="project-card__name">Nexus</h3>
+            <h3 class="project-card__name">3D Feel</h3>
           </div>
           <div class="project-card__arrow" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -199,7 +200,7 @@
           <div class="project-card__overlay"></div>
           <div class="project-card__info">
             <p class="project-card__tags">Design System · Motion</p>
-            <h3 class="project-card__name">Form</h3>
+            <h3 class="project-card__name">Simple but Eloquent</h3>
           </div>
           <div class="project-card__arrow" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -220,6 +221,157 @@
       </a>
     </div>
   </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       HOW IT WORKS — Cinematic Process Section
+       Scroll-jacked 4-step sequence with video transitions
+  ════════════════════════════════════════════════════════ -->
+  <section id="process" aria-label="Our process — how we work">
+    <div class="proc__inner">
+
+      <!-- Background image layers (crossfade via JS) -->
+      <div class="proc__bg-layer" id="proc-bg-0"></div>
+      <div class="proc__bg-layer" id="proc-bg-1"></div>
+      <div class="proc__bg-layer" id="proc-bg-2"></div>
+      <div class="proc__bg-layer" id="proc-bg-3"></div>
+      <div class="proc__bg-layer" id="proc-bg-4"></div>
+
+      <!-- Videos: muted + playsinline required for autoplay -->
+      <video class="proc__video" id="proc-vid-1" muted playsinline preload="none"></video>
+      <video class="proc__video" id="proc-vid-2" muted playsinline preload="none"></video>
+      <video class="proc__video" id="proc-vid-3" muted playsinline preload="none"></video>
+      <video class="proc__video" id="proc-vid-4" muted playsinline preload="none"></video>
+
+      <!-- Dark scrim for readability -->
+      <div class="proc__scrim"></div>
+
+      <!-- Phase text overlays -->
+      <div class="proc__content">
+
+        <!-- Phase 0: Intro -->
+        <div class="proc__phase-text" data-phase="0">
+          <span class="proc__eyebrow">Our Process</span>
+          <h2 class="proc__headline">HOW IT<br><em>ACTUALLY WORKS</em></h2>
+          <p class="proc__scroll-hint">Scroll to begin</p>
+        </div>
+
+        <!-- Phase 1: Discover Ideas -->
+        <div class="proc__phase-text" data-phase="1">
+          <span class="proc__eyebrow">Step 01 &mdash; Discover</span>
+          <h2 class="proc__headline">The<br><em>Idea</em></h2>
+          <p class="proc__desc">Every great digital product starts with a bold idea. We sit with you, dig into your vision and audience, then shape raw thinking into a clear, actionable strategy.</p>
+        </div>
+
+        <!-- Phase 2: Design & Build -->
+        <div class="proc__phase-text" data-phase="2">
+          <span class="proc__eyebrow">Step 02 &mdash; Create</span>
+          <h2 class="proc__headline">Design<br><em>&amp; Build</em></h2>
+          <p class="proc__desc">From wireframes to working product — we design and build in tight loops. Every pixel intentional. Every interaction considered. We build things that feel alive.</p>
+        </div>
+
+        <!-- Phase 3: Refine -->
+        <div class="proc__phase-text" data-phase="3">
+          <span class="proc__eyebrow">Step 03 &mdash; Perfect</span>
+          <h2 class="proc__headline">Refine<br><em>&amp; Polish</em></h2>
+          <p class="proc__desc">We obsess over the details. Animations, micro-interactions, performance — nothing ships until it's sharp. This is where good becomes truly great.</p>
+        </div>
+
+        <!-- Phase 4: Launch -->
+        <div class="proc__phase-text" data-phase="4">
+          <span class="proc__eyebrow">Step 04 &mdash; Deploy</span>
+          <h2 class="proc__headline">Launch<br><em>&amp; Grow</em></h2>
+          <p class="proc__desc">We ship with precision — zero-downtime deploys, performance monitoring, and post-launch support. Your product goes live and we make sure it flies.</p>
+        </div>
+
+      </div><!-- /.proc__content -->
+
+      <!-- Phase 5: Summary cards -->
+      <div class="proc__summary" id="proc-summary">
+        <div class="proc__summary-header">
+          <p>The Full Picture</p>
+          <h2>From Idea to Impact</h2>
+        </div>
+        <div class="proc__cards">
+          <div class="proc__card" data-step="01">
+            <div class="proc__card-header">
+              <span class="proc__card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M18.36 5.64l1.41-1.41"/>
+                  <circle cx="12" cy="12" r="5"/>
+                </svg>
+              </span>
+              <span class="proc__card-num">01 / DISCOVER</span>
+            </div>
+            <h3 class="proc__card-title">The Idea</h3>
+            <p class="proc__card-body">We listen, research, and shape your vision into a solid strategy before a single line of code is written.</p>
+            <span class="proc__card-watermark">01</span>
+          </div>
+
+          <div class="proc__card" data-step="02">
+            <div class="proc__card-header">
+              <span class="proc__card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                  <line x1="8" y1="21" x2="16" y2="21"/>
+                  <line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+              </span>
+              <span class="proc__card-num">02 / CREATE</span>
+            </div>
+            <h3 class="proc__card-title">Design &amp; Build</h3>
+            <p class="proc__card-body">Design and development in tight loops. Every element crafted with purpose, every screen built to perform and convert.</p>
+            <span class="proc__card-watermark">02</span>
+          </div>
+
+          <div class="proc__card" data-step="03">
+            <div class="proc__card-header">
+              <span class="proc__card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+              </span>
+              <span class="proc__card-num">03 / PERFECT</span>
+            </div>
+            <h3 class="proc__card-title">Refine &amp; Polish</h3>
+            <p class="proc__card-body">We sweat the details — animations, performance, and micro-interactions that make your product feel genuinely premium.</p>
+            <span class="proc__card-watermark">03</span>
+          </div>
+
+          <div class="proc__card" data-step="04">
+            <div class="proc__card-header">
+              <span class="proc__card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.71 1.26-1.55 1.64-2.5C7.2 16.65 5.75 15.2 4.5 16.5z"/>
+                  <path d="M12 15l-3-3m0 0l-2 2M9 12L6 9m15-4a9 9 0 0 1-9 9l-2-2 9-9 2 2z"/>
+                </svg>
+              </span>
+              <span class="proc__card-num">04 / DEPLOY</span>
+            </div>
+            <h3 class="proc__card-title">Launch &amp; Grow</h3>
+            <p class="proc__card-body">Precision deployment, monitoring, and ongoing support. We don't just ship — we make sure your product succeeds.</p>
+            <span class="proc__card-watermark">04</span>
+          </div>
+        </div>
+        <p class="proc__summary-cta">Scroll to continue</p>
+      </div><!-- /.proc__summary -->
+
+      <!-- Progress dots (6 total: phases 0–5) -->
+      <div class="proc__dots" aria-hidden="true">
+        <span class="proc__dot" data-dot="0"></span>
+        <span class="proc__dot" data-dot="1"></span>
+        <span class="proc__dot" data-dot="2"></span>
+        <span class="proc__dot" data-dot="3"></span>
+        <span class="proc__dot" data-dot="4"></span>
+        <span class="proc__dot" data-dot="5"></span>
+      </div>
+
+      <!-- Video loading progress bar -->
+      <div class="proc__loader">
+        <div class="proc__loader-bar"></div>
+      </div>
+
+    </div><!-- /.proc__inner -->
+  </section><!-- /#process -->
 
   <!-- SCROLL PATH SCENE ─────────────────────────────────────
        Wrapper spans Services → About → Contact.
@@ -421,6 +573,7 @@
   <script src="js/gradientBars.js"></script>
   <script src="js/scrollPath.js"></script>
   <script src="js/fluidParticles.js"></script>
+  <script src="js/process.js"></script>
   <script src="js/main.js"></script>
 
   <!-- Service Worker — registers immediately for instant repeat visits -->

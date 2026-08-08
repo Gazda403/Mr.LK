@@ -1,0 +1,460 @@
+/* ============================================================
+   MR. LK STUDIO — Cinematic Process Section
+   Scroll-jacked "How It Works" experience
+   ============================================================ */
+
+/* ── Section Shell ─────────────────────────────────────────── */
+#process {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+}
+
+.proc__inner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* When locked: inner climbs to fixed overlay */
+#process.is-active .proc__inner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+}
+
+/* ── Background layers ─────────────────────────────────────── */
+.proc__bg-layer {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity;
+}
+
+.proc__bg-layer.is-visible {
+  opacity: 1;
+}
+
+/* Dark gradient scrim over bg images */
+.proc__scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.2) 45%,
+      rgba(0, 0, 0, 0.7) 100%
+    );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ── Video elements ────────────────────────────────────────── */
+.proc__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.proc__video.is-playing {
+  opacity: 1;
+}
+
+/* ── Phase text content ─────────────────────────────────────── */
+.proc__content {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 5vw;
+}
+
+.proc__phase-text {
+  position: absolute;
+  text-align: center;
+  max-width: 860px;
+  padding: 0 2rem;
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.proc__phase-text.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.proc__eyebrow {
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+  margin-bottom: 1.25rem;
+  display: block;
+}
+
+.proc__headline {
+  font-family: var(--f-display);
+  font-size: clamp(3.5rem, 9vw, 9rem);
+  font-weight: 700;
+  color: var(--c-white);
+  line-height: 0.9;
+  letter-spacing: -0.025em;
+  margin-bottom: 1.75rem;
+}
+
+.proc__headline em {
+  font-style: italic;
+  color: var(--c-gold);
+}
+
+.proc__desc {
+  font-family: var(--f-body);
+  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  font-weight: 300;
+  color: rgba(245, 245, 245, 0.68);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.75;
+}
+
+/* Scroll hint (phase 0 only) */
+.proc__scroll-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  font-family: var(--f-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(245, 245, 245, 0.38);
+  margin-top: 2.5rem;
+  animation: proc-breathe 2.5s ease-in-out infinite;
+}
+
+.proc__scroll-hint::before,
+.proc__scroll-hint::after {
+  content: '';
+  display: block;
+  width: 2.25rem;
+  height: 1px;
+  background: rgba(207, 47, 47, 0.5);
+}
+
+@keyframes proc-breathe {
+  0%, 100% { opacity: 0.38; }
+  50% { opacity: 0.75; }
+}
+
+/* ── Progress dots ─────────────────────────────────────────── */
+.proc__dots {
+  position: absolute;
+  right: 2.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.proc__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(245, 245, 245, 0.2);
+  transition: background 0.4s ease, transform 0.4s ease, height 0.4s ease;
+}
+
+.proc__dot.is-done {
+  background: rgba(207, 47, 47, 0.45);
+}
+
+.proc__dot.is-active {
+  background: var(--c-gold);
+  transform: scale(1.6);
+  border-radius: 3px;
+  height: 14px;
+}
+
+/* ── Summary phase ─────────────────────────────────────────── */
+.proc__summary {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 4vw;
+  background:
+    radial-gradient(ellipse at 25% 45%, rgba(207, 47, 47, 0.16) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 65%, rgba(120, 10, 10, 0.2) 0%, transparent 50%),
+    #080808;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.proc__summary.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.proc__summary-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.proc__summary-header p {
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+  margin-bottom: 0.7rem;
+}
+
+.proc__summary-header h2 {
+  font-family: var(--f-display);
+  font-size: clamp(1.8rem, 3.5vw, 3.5rem);
+  font-weight: 700;
+  color: var(--c-white);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+/* 4-card grid */
+.proc__cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1240px;
+}
+
+.proc__card {
+  position: relative;
+  background: linear-gradient(160deg, rgba(28, 12, 14, 0.8) 0%, rgba(12, 9, 12, 0.92) 100%);
+  border: 1px solid rgba(207, 47, 47, 0.22);
+  border-radius: 16px;
+  padding: 2.2rem 1.6rem;
+  opacity: 0;
+  transform: translateY(30px);
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+/* Glowing top accent border */
+.proc__card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--c-gold), rgba(207, 47, 47, 0.1));
+  opacity: 0.6;
+  transition: opacity 0.4s ease;
+}
+
+.proc__card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.proc__card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(207, 47, 47, 0.65);
+  box-shadow:
+    0 22px 50px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(207, 47, 47, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.proc__card:hover::before {
+  opacity: 1;
+}
+
+.proc__card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.proc__card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: rgba(207, 47, 47, 0.14);
+  border: 1px solid rgba(207, 47, 47, 0.3);
+  color: var(--c-gold);
+  transition: background 0.3s, border-color 0.3s, transform 0.3s;
+}
+
+.proc__card:hover .proc__card-icon {
+  background: rgba(207, 47, 47, 0.3);
+  border-color: var(--c-gold);
+  transform: scale(1.08);
+}
+
+.proc__card-num {
+  font-family: var(--f-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+}
+
+.proc__card-title {
+  font-family: var(--f-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--c-white);
+  margin-bottom: 0.8rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.proc__card-body {
+  font-family: var(--f-body);
+  font-size: 0.88rem;
+  color: rgba(245, 245, 245, 0.65);
+  line-height: 1.7;
+  position: relative;
+  z-index: 2;
+}
+
+.proc__card-watermark {
+  position: absolute;
+  bottom: -15px;
+  right: 12px;
+  font-family: var(--f-display);
+  font-size: 4.5rem;
+  font-weight: 800;
+  color: rgba(207, 47, 47, 0.05);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  transition: color 0.4s ease, transform 0.4s ease;
+}
+
+.proc__card:hover .proc__card-watermark {
+  color: rgba(207, 47, 47, 0.14);
+  transform: scale(1.08) translateY(-4px);
+}
+
+/* Continue hint */
+.proc__summary-cta {
+  margin-top: 2.25rem;
+  font-family: var(--f-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: rgba(245, 245, 245, 0.35);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: proc-breathe 2.5s ease-in-out infinite;
+}
+
+.proc__summary-cta::after {
+  content: '↓';
+  font-style: normal;
+  font-size: 0.75rem;
+}
+
+/* ── Video loading bar ─────────────────────────────────────── */
+.proc__loader {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  z-index: 8;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.proc__loader.is-active {
+  opacity: 1;
+}
+
+.proc__loader-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--c-gold);
+  transition: width 0.1s linear;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .proc__cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .proc__dots {
+    right: 1rem;
+  }
+
+  .proc__headline {
+    font-size: clamp(2.8rem, 10vw, 5rem);
+  }
+}
+
+@media (max-width: 600px) {
+  .proc__cards {
+    grid-template-columns: 1fr;
+    max-height: 60vh;
+    overflow-y: auto;
+    gap: 0.75rem;
+  }
+
+  .proc__card {
+    padding: 1.25rem 1rem;
+  }
+
+  .proc__summary-header h2 {
+    font-size: 1.6rem;
+  }
+
+  .proc__dots {
+    display: none;
+  }
+}
